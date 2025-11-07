@@ -1,0 +1,762 @@
+#:include src/widgets/base_screen.kv
+#:import dp kivy.metrics.dp
+
+<FooterButton@ButtonBehavior+BoxLayout>:
+    orientation: "vertical"
+    spacing: dp(4)
+    padding: 0, dp(2), 0, 0
+    size_hint: 1, None
+    height: dp(64)
+    background_color: 0, 0, 0, 0
+    canvas.before:
+        Color:
+            rgba: self.background_color
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+<MenuItemCard@MDCard>:
+    title: ""
+    kcal: ""
+    protein: ""
+    fat: ""
+    carbs: ""
+    price: ""
+    volume: ""
+    image_source: "assets/drinks/Espresso.png"
+    size_hint: None, None
+    size: dp(160), dp(240)
+    radius: [dp(8), dp(8), dp(8), dp(8)]
+    md_bg_color: 0.42, 0.44, 0.40, 1  # #6B7065 - olive green
+    elevation: 0
+    padding: dp(8), dp(8), dp(8), dp(8)
+    orientation: "vertical"
+    spacing: dp(4)
+    
+    BoxLayout:
+        orientation: "vertical"
+        size_hint: 1, 1
+        spacing: dp(4)
+        
+        # Central icon
+        AnchorLayout:
+            anchor_x: "center"
+            anchor_y: "center"
+            size_hint_y: None
+            height: dp(80)
+            Image:
+                source: root.image_source
+                size_hint: None, None
+                width: dp(64)
+                height: dp(64)
+                allow_stretch: True
+                keep_ratio: True
+        
+        # Title
+        MDLabel:
+            text: root.title
+            font_name: "assets/fonts/minecraft.ttf"
+            font_size: "14sp"
+            halign: "left"
+            valign: "middle"
+            theme_text_color: "Custom"
+            text_color: 1, 1, 1, 1
+            size_hint_y: None
+            height: self.texture_size[1]
+            text_size: self.size
+            padding: dp(4), 0, 0, 0
+        
+        # Nutritional info
+        MDLabel:
+            text: "Ккал: " + root.kcal
+            font_name: "assets/fonts/minecraft.ttf"
+            font_size: "11sp"
+            halign: "left"
+            valign: "middle"
+            theme_text_color: "Custom"
+            text_color: 1, 1, 1, 1
+            size_hint_y: None
+            height: self.texture_size[1]
+            text_size: self.size
+        
+        MDLabel:
+            text: "Б:" + root.protein + " Ж:" + root.fat + " У:" + root.carbs
+            font_name: "assets/fonts/minecraft.ttf"
+            font_size: "11sp"
+            halign: "left"
+            valign: "middle"
+            theme_text_color: "Custom"
+            text_color: 1, 1, 1, 1
+            size_hint_y: None
+            height: self.texture_size[1]
+            text_size: self.size
+        
+        # Spacer
+        Widget:
+            size_hint_y: 1
+        
+        # Bottom row: price (left) and volume (right)
+        BoxLayout:
+            orientation: "horizontal"
+            size_hint_y: None
+            height: dp(24)
+            spacing: dp(4)
+            
+            # Price badge (left)
+            AnchorLayout:
+                anchor_x: "left"
+                anchor_y: "center"
+                size_hint_x: None
+                width: dp(50)
+                canvas.before:
+                    Color:
+                        rgba: 0.2, 0.8, 0.4, 1  # Bright green
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [dp(4), dp(4), dp(4), dp(4)]
+                MDLabel:
+                    text: root.price
+                    font_name: "assets/fonts/minecraft.ttf"
+                    font_size: "12sp"
+                    halign: "center"
+                    valign: "middle"
+                    theme_text_color: "Custom"
+                    text_color: 1, 1, 1, 1
+                    size_hint: 1, 1
+                    text_size: self.size
+            
+            # Volume (right)
+            AnchorLayout:
+                anchor_x: "right"
+                anchor_y: "center"
+                size_hint_x: 1
+                MDLabel:
+                    text: root.volume
+                    font_name: "assets/fonts/minecraft.ttf"
+                    font_size: "11sp"
+                    halign: "right"
+                    valign: "middle"
+                    theme_text_color: "Custom"
+                    text_color: 1, 1, 1, 1
+                    size_hint: None, None
+                    size: self.texture_size
+                    text_size: None, None
+
+<OurMenuScreen>:
+    BaseScreen:
+        # Top bar
+        BoxLayout:
+            id: top_bar
+            size_hint_x: 1
+            size_hint_y: None
+            height: dp(68)
+            pos_hint: {"x": 0, "top": 1}
+            padding: dp(12), dp(8)
+            spacing: dp(12)
+            # Back button
+            AnchorLayout:
+                anchor_x: 'left'
+                anchor_y: 'center'
+                size_hint_x: None
+                width: dp(48)
+                MDIconButton:
+                    icon: 'chevron-left'
+                    theme_text_color: 'Custom'
+                    text_color: 0,0,0,1
+                    size_hint: None, None
+                    size: dp(48), dp(48)
+                    on_release: app.go_back()
+            # Title placeholder (center)
+            AnchorLayout:
+                anchor_x: "center"
+                anchor_y: "center"
+                Label:
+                    text: "Меню"
+                    font_size: "20sp"
+                    color: 0, 0, 0, 1
+                    size_hint: None, None
+                    size: self.texture_size
+
+            # Right image (mail)
+            AnchorLayout:
+                anchor_x: "right"
+                anchor_y: "center"
+                size_hint_x: None
+                width: dp(48)
+                MDIconButton:
+                    icon: "email"
+                    size_hint: None, None
+                    width: dp(48)
+                    height: dp(48)
+                    theme_color: "Custom"
+                    color: 0, 0, 0, 1
+                    on_release: app.open_mail_overlay()
+
+        # Body (fills space between top bar and footer)
+        BoxLayout:
+            id: body_host
+            orientation: "vertical"
+            size_hint: None, None
+            x: 0
+            y: footer.height
+            width: root.width
+            height: root.height - top_bar.height - footer.height
+            ScrollView:
+                size_hint: 1, 1
+                do_scroll_x: False
+                do_scroll_y: True
+                scroll_wheel_distance: dp(72)
+                scroll_type: ['bars', 'content']
+                bar_width: 0
+                effect_cls: "ScrollEffect"
+                MDBoxLayout:
+                    orientation: "vertical"
+                    spacing: dp(16)
+                    padding: dp(12), dp(12), dp(12), dp(12)
+                    size_hint_y: None
+                    height: self.minimum_height
+                    
+                    # Section: BY ALUCARD
+                    MDLabel:
+                        text: "BY ALUCARD"
+                        font_name: "assets/fonts/minecraft.ttf"
+                        font_size: "18sp"
+                        halign: "left"
+                        valign: "middle"
+                        theme_text_color: "Custom"
+                        text_color: 0, 0, 0, 1
+                        size_hint_y: None
+                        height: self.texture_size[1]
+                        text_size: self.size
+                    
+                    # Grid for BY ALUCARD items (2 columns, 11 rows)
+                    BoxLayout:
+                        orientation: "horizontal"
+                        size_hint_x: 1
+                        size_hint_y: None
+                        height: alucard_grid.minimum_height
+                        Widget:
+                            size_hint_x: 1
+                        GridLayout:
+                            id: alucard_grid
+                            cols: 2
+                            spacing: dp(8)
+                            size_hint_x: None
+                            size_hint_y: None
+                            width: self.minimum_width
+                            height: self.minimum_height
+                            padding: 0, 0, 0, 0
+                            
+                            # 22 items for BY ALUCARD (2 columns x 11 rows)
+                            MenuItemCard:
+                                title: "Item 1"
+                                kcal: "290"
+                                protein: "12"
+                                fat: "10"
+                                carbs: "42"
+                                price: "290"
+                                volume: "400 мл"
+                                image_source: "assets/drinks/BubbleTea(Assam-Popcorn).png"
+                            MenuItemCard:
+                                title: "Item 2"
+                                kcal: "290"
+                                protein: "12"
+                                fat: "10"
+                                carbs: "42"
+                                price: "290"
+                                volume: "400 мл"
+                                image_source: "assets/drinks/BubbleTea(CarcadeMaraque).png"
+                            MenuItemCard:
+                                title: "Item 3"
+                                kcal: "290"
+                                protein: "12"
+                                fat: "10"
+                                carbs: "42"
+                                price: "290"
+                                volume: "400 мл"
+                                image_source: "assets/drinks/ChocolatteBananaBrouni.png"
+                            MenuItemCard:
+                                title: "Item 4"
+                                kcal: "290"
+                                protein: "12"
+                                fat: "10"
+                                carbs: "42"
+                                price: "290"
+                                volume: "400 мл"
+                                image_source: "assets/drinks/Espresso.png"
+                            MenuItemCard:
+                                title: "Item 5"
+                                kcal: "290"
+                                protein: "12"
+                                fat: "10"
+                                carbs: "42"
+                                price: "290"
+                                volume: "400 мл"
+                                image_source: "assets/drinks/latte(compotik).png"
+                            MenuItemCard:
+                                title: "Item 6"
+                                kcal: "290"
+                                protein: "12"
+                                fat: "10"
+                                carbs: "42"
+                                price: "290"
+                                volume: "400 мл"
+                                image_source: "assets/drinks/lemonad.png"
+                            MenuItemCard:
+                                title: "Item 7"
+                                kcal: "290"
+                                protein: "12"
+                                fat: "10"
+                                carbs: "42"
+                                price: "290"
+                                volume: "400 мл"
+                                image_source: "assets/drinks/Raf(cream-brule).png"
+                            MenuItemCard:
+                                title: "Item 8"
+                                kcal: "290"
+                                protein: "12"
+                                fat: "10"
+                                carbs: "42"
+                                price: "290"
+                                volume: "400 мл"
+                                image_source: "assets/drinks/Raf(cream-brule)-1.png"
+                            MenuItemCard:
+                                title: "Item 9"
+                                kcal: "290"
+                                protein: "12"
+                                fat: "10"
+                                carbs: "42"
+                                price: "290"
+                                volume: "400 мл"
+                                image_source: "assets/drinks/BubbleTea(Assam-Popcorn).png"
+                            MenuItemCard:
+                                title: "Item 10"
+                                kcal: "290"
+                                protein: "12"
+                                fat: "10"
+                                carbs: "42"
+                                price: "290"
+                                volume: "400 мл"
+                                image_source: "assets/drinks/BubbleTea(CarcadeMaraque).png"
+                            MenuItemCard:
+                                title: "Item 11"
+                                kcal: "290"
+                                protein: "12"
+                                fat: "10"
+                                carbs: "42"
+                                price: "290"
+                                volume: "400 мл"
+                                image_source: "assets/drinks/ChocolatteBananaBrouni.png"
+                            MenuItemCard:
+                                title: "Item 12"
+                                kcal: "290"
+                                protein: "12"
+                                fat: "10"
+                                carbs: "42"
+                                price: "290"
+                                volume: "400 мл"
+                                image_source: "assets/drinks/Espresso.png"
+                            MenuItemCard:
+                                title: "Item 13"
+                                kcal: "290"
+                                protein: "12"
+                                fat: "10"
+                                carbs: "42"
+                                price: "290"
+                                volume: "400 мл"
+                                image_source: "assets/drinks/latte(compotik).png"
+                            MenuItemCard:
+                                title: "Item 14"
+                                kcal: "290"
+                                protein: "12"
+                                fat: "10"
+                                carbs: "42"
+                                price: "290"
+                                volume: "400 мл"
+                                image_source: "assets/drinks/lemonad.png"
+                            MenuItemCard:
+                                title: "Item 15"
+                                kcal: "290"
+                                protein: "12"
+                                fat: "10"
+                                carbs: "42"
+                                price: "290"
+                                volume: "400 мл"
+                                image_source: "assets/drinks/Raf(cream-brule).png"
+                            MenuItemCard:
+                                title: "Item 16"
+                                kcal: "290"
+                                protein: "12"
+                                fat: "10"
+                                carbs: "42"
+                                price: "290"
+                                volume: "400 мл"
+                                image_source: "assets/drinks/Raf(cream-brule)-1.png"
+                            MenuItemCard:
+                                title: "Item 17"
+                                kcal: "290"
+                                protein: "12"
+                                fat: "10"
+                                carbs: "42"
+                                price: "290"
+                                volume: "400 мл"
+                                image_source: "assets/drinks/BubbleTea(Assam-Popcorn).png"
+                            MenuItemCard:
+                                title: "Item 18"
+                                kcal: "290"
+                                protein: "12"
+                                fat: "10"
+                                carbs: "42"
+                                price: "290"
+                                volume: "400 мл"
+                                image_source: "assets/drinks/BubbleTea(CarcadeMaraque).png"
+                            MenuItemCard:
+                                title: "Item 19"
+                                kcal: "290"
+                                protein: "12"
+                                fat: "10"
+                                carbs: "42"
+                                price: "290"
+                                volume: "400 мл"
+                                image_source: "assets/drinks/ChocolatteBananaBrouni.png"
+                            MenuItemCard:
+                                title: "Item 20"
+                                kcal: "290"
+                                protein: "12"
+                                fat: "10"
+                                carbs: "42"
+                                price: "290"
+                                volume: "400 мл"
+                                image_source: "assets/drinks/Espresso.png"
+                            MenuItemCard:
+                                title: "Item 21"
+                                kcal: "290"
+                                protein: "12"
+                                fat: "10"
+                                carbs: "42"
+                                price: "290"
+                                volume: "400 мл"
+                                image_source: "assets/drinks/latte(compotik).png"
+                            MenuItemCard:
+                                title: "Item 22"
+                                kcal: "290"
+                                protein: "12"
+                                fat: "10"
+                                carbs: "42"
+                                price: "290"
+                                volume: "400 мл"
+                                image_source: "assets/drinks/lemonad.png"
+                        Widget:
+                            size_hint_x: 1
+                    
+                    # Section: CLASSIC
+                    MDLabel:
+                        text: "CLASSIC"
+                        font_name: "assets/fonts/minecraft.ttf"
+                        font_size: "18sp"
+                        halign: "left"
+                        valign: "middle"
+                        theme_text_color: "Custom"
+                        text_color: 0, 0, 0, 1
+                        size_hint_y: None
+                        height: self.texture_size[1]
+                        text_size: self.size
+                    
+                    # Grid for CLASSIC items (2 columns, 8 rows)
+                    BoxLayout:
+                        orientation: "horizontal"
+                        size_hint_x: 1
+                        size_hint_y: None
+                        height: classic_grid.minimum_height
+                        Widget:
+                            size_hint_x: 1
+                        GridLayout:
+                            id: classic_grid
+                            cols: 2
+                            spacing: dp(8)
+                            size_hint_x: None
+                            size_hint_y: None
+                            width: self.minimum_width
+                            height: self.minimum_height
+                            padding: 0, 0, 0, 0
+                            
+                            # 16 items for CLASSIC (2 columns x 8 rows)
+                            MenuItemCard:
+                                title: "Item 1"
+                                kcal: "290"
+                                protein: "12"
+                                fat: "10"
+                                carbs: "42"
+                                price: "290"
+                                volume: "400 мл"
+                                image_source: "assets/drinks/Espresso.png"
+                            MenuItemCard:
+                                title: "Item 2"
+                                kcal: "290"
+                                protein: "12"
+                                fat: "10"
+                                carbs: "42"
+                                price: "290"
+                                volume: "400 мл"
+                                image_source: "assets/drinks/latte(compotik).png"
+                            MenuItemCard:
+                                title: "Item 3"
+                                kcal: "290"
+                                protein: "12"
+                                fat: "10"
+                                carbs: "42"
+                                price: "290"
+                                volume: "400 мл"
+                                image_source: "assets/drinks/lemonad.png"
+                            MenuItemCard:
+                                title: "Item 4"
+                                kcal: "290"
+                                protein: "12"
+                                fat: "10"
+                                carbs: "42"
+                                price: "290"
+                                volume: "400 мл"
+                                image_source: "assets/drinks/ChocolatteBananaBrouni.png"
+                            MenuItemCard:
+                                title: "Item 5"
+                                kcal: "290"
+                                protein: "12"
+                                fat: "10"
+                                carbs: "42"
+                                price: "290"
+                                volume: "400 мл"
+                                image_source: "assets/drinks/BubbleTea(Assam-Popcorn).png"
+                            MenuItemCard:
+                                title: "Item 6"
+                                kcal: "290"
+                                protein: "12"
+                                fat: "10"
+                                carbs: "42"
+                                price: "290"
+                                volume: "400 мл"
+                                image_source: "assets/drinks/BubbleTea(CarcadeMaraque).png"
+                            MenuItemCard:
+                                title: "Item 7"
+                                kcal: "290"
+                                protein: "12"
+                                fat: "10"
+                                carbs: "42"
+                                price: "290"
+                                volume: "400 мл"
+                                image_source: "assets/drinks/Raf(cream-brule).png"
+                            MenuItemCard:
+                                title: "Item 8"
+                                kcal: "290"
+                                protein: "12"
+                                fat: "10"
+                                carbs: "42"
+                                price: "290"
+                                volume: "400 мл"
+                                image_source: "assets/drinks/Raf(cream-brule)-1.png"
+                            MenuItemCard:
+                                title: "Item 9"
+                                kcal: "290"
+                                protein: "12"
+                                fat: "10"
+                                carbs: "42"
+                                price: "290"
+                                volume: "400 мл"
+                                image_source: "assets/drinks/Espresso.png"
+                            MenuItemCard:
+                                title: "Item 10"
+                                kcal: "290"
+                                protein: "12"
+                                fat: "10"
+                                carbs: "42"
+                                price: "290"
+                                volume: "400 мл"
+                                image_source: "assets/drinks/latte(compotik).png"
+                            MenuItemCard:
+                                title: "Item 11"
+                                kcal: "290"
+                                protein: "12"
+                                fat: "10"
+                                carbs: "42"
+                                price: "290"
+                                volume: "400 мл"
+                                image_source: "assets/drinks/lemonad.png"
+                            MenuItemCard:
+                                title: "Item 12"
+                                kcal: "290"
+                                protein: "12"
+                                fat: "10"
+                                carbs: "42"
+                                price: "290"
+                                volume: "400 мл"
+                                image_source: "assets/drinks/ChocolatteBananaBrouni.png"
+                            MenuItemCard:
+                                title: "Item 13"
+                                kcal: "290"
+                                protein: "12"
+                                fat: "10"
+                                carbs: "42"
+                                price: "290"
+                                volume: "400 мл"
+                                image_source: "assets/drinks/BubbleTea(Assam-Popcorn).png"
+                            MenuItemCard:
+                                title: "Item 14"
+                                kcal: "290"
+                                protein: "12"
+                                fat: "10"
+                                carbs: "42"
+                                price: "290"
+                                volume: "400 мл"
+                                image_source: "assets/drinks/BubbleTea(CarcadeMaraque).png"
+                            MenuItemCard:
+                                title: "Item 15"
+                                kcal: "290"
+                                protein: "12"
+                                fat: "10"
+                                carbs: "42"
+                                price: "290"
+                                volume: "400 мл"
+                                image_source: "assets/drinks/Raf(cream-brule).png"
+                            MenuItemCard:
+                                title: "Item 16"
+                                kcal: "290"
+                                protein: "12"
+                                fat: "10"
+                                carbs: "42"
+                                price: "290"
+                                volume: "400 мл"
+                                image_source: "assets/drinks/Raf(cream-brule)-1.png"
+                        Widget:
+                            size_hint_x: 1
+
+        # Footer
+        BoxLayout:
+            id: footer
+            size_hint_x: 1
+            size_hint_y: None
+            height: dp(88)
+            pos_hint: {"x": 0, "y": 0}
+            padding: dp(12), dp(8)
+            spacing: dp(12)
+            canvas.before:
+                Color:
+                    rgba: 1, 1, 1, 1
+                Rectangle:
+                    source: "assets/backgrounds/Footer.jpg"
+                    pos: self.pos
+                    size: self.size
+            FooterButton:
+                on_release: app.footer_addresses_click()
+                AnchorLayout:
+                    anchor_x: "center"
+                    anchor_y: "center"
+                    MDIcon:
+                        icon: "map-marker"
+                        size_hint: None, None
+                        width: dp(24)
+                        height: dp(24)
+                        theme_color: "Custom"
+                        color: 0, 0, 0, 1
+                AnchorLayout:
+                    anchor_x: "center"
+                    anchor_y: "center"
+                    Label:
+                        text: "Наши кофейни"
+                        font_size: "12sp"
+                        halign: "center"
+                        valign: "middle"
+                        text_size: self.size
+                        color: 0, 0, 0, 1
+            FooterLogoButton:
+            FooterButton:
+                on_release: app.footer_invite_click()
+                AnchorLayout:
+                    anchor_x: "center"
+                    anchor_y: "center"
+                    MDIcon:
+                        icon: "account-plus"
+                        size_hint: None, None
+                        width: dp(24)
+                        height: dp(24)
+                        theme_color: "Custom"
+                        color: 0, 0, 0, 1
+                AnchorLayout:
+                    anchor_x: "center"
+                    anchor_y: "center"
+                    Label:
+                        text: "Пригласить"
+                        font_size: "12sp"
+                        halign: "center"
+                        valign: "middle"
+                        text_size: self.size
+                        color: 0, 0, 0, 1
+
+        # Mail overlay (right drawer like menu)
+        FloatLayout:
+            id: mail_overlay_root
+            size_hint: None, None
+            size: 0, 0
+            opacity: 0
+            disabled: True
+            canvas.before:
+                Color:
+                    rgba: 0, 0, 0, 0.5
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+            Button:
+                background_color: 0,0,0,0
+                size_hint: 1, 1
+                disabled: self.parent.disabled
+                on_release: app.close_mail_overlay()
+            BoxLayout:
+                id: mail_panel
+                orientation: "vertical"
+                size_hint_y: 1
+                size_hint_x: None
+                width: root.width * 0.8
+                x: root.width
+                y: 0
+                padding: dp(16), dp(24)
+                spacing: dp(16)
+                canvas.before:
+                    Color:
+                        rgba: 1, 1, 1, 1
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+                BoxLayout:
+                    orientation: "horizontal"
+                    size_hint_y: None
+                    height: dp(40)
+                    spacing: dp(8)
+                    MDLabel:
+                        text: "Входящие"
+                        halign: "left"
+                        valign: "middle"
+                        text_size: self.size
+                        color: 0,0,0,1
+                    MDIconButton:
+                        icon: "close"
+                        theme_text_color: "Custom"
+                        text_color: 0,0,0,1
+                        on_release: app.close_mail_overlay()
+                ScrollView:
+                    size_hint_x: 1
+                    size_hint_y: 1
+                    do_scroll_x: False
+                    do_scroll_y: True
+                    scroll_wheel_distance: dp(72)
+                    scroll_type: ['bars', 'content']
+                    bar_width: 0
+                    effect_cls: "ScrollEffect"
+                    MDBoxLayout:
+                        id: mail_list
+                        orientation: "vertical"
+                        spacing: dp(10)
+                        size_hint_y: None
+                        height: self.minimum_height
+
+        LoyaltyOverlay:
+            id: loyalty_overlay_root
+

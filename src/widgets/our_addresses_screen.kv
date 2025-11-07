@@ -1,0 +1,284 @@
+#:include src/widgets/base_screen.kv
+#:import dp kivy.metrics.dp
+#:import MapView kivy_garden.mapview.MapView
+#:import NoTransition kivy.uix.screenmanager.NoTransition
+
+
+<FooterButton@ButtonBehavior+BoxLayout>:
+    orientation: "vertical"
+    spacing: dp(4)
+    padding: 0, dp(2), 0, 0
+    size_hint: 1, None
+    height: dp(64)
+    background_color: 0, 0, 0, 0
+    canvas.before:
+        Color:
+            rgba: self.background_color
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+<OurAddressesScreen>:
+    BaseScreen:
+        # Top bar
+        BoxLayout:
+            id: top_bar
+            size_hint_x: 1
+            size_hint_y: None
+            height: dp(68)
+            pos_hint: {"x": 0, "top": 1}
+            padding: dp(12), dp(8)
+            spacing: dp(12)
+            # Back button
+            AnchorLayout:
+                anchor_x: 'left'
+                anchor_y: 'center'
+                size_hint_x: None
+                width: dp(48)
+                MDIconButton:
+                    icon: 'chevron-left'
+                    theme_text_color: 'Custom'
+                    text_color: 0,0,0,1
+                    size_hint: None, None
+                    size: dp(48), dp(48)
+                    on_release: app.go_back()
+            # Title placeholder (center)
+            AnchorLayout:
+                anchor_x: "center"
+                anchor_y: "center"
+                Label:
+                    text: "Наши кофейни"
+                    font_size: "20sp"
+                    color: 0, 0, 0, 1
+                    size_hint: None, None
+                    size: self.texture_size
+
+            # Right image (mail)
+            AnchorLayout:
+                anchor_x: "right"
+                anchor_y: "center"
+                size_hint_x: None
+                width: dp(48)
+                MDIconButton:
+                    icon: "email"
+                    size_hint: None, None
+                    width: dp(48)
+                    height: dp(48)
+                    theme_color: "Custom"
+                    color: 0, 0, 0, 1
+                    on_release: app.open_mail_overlay()
+
+        # Body (fills space between top bar and footer)
+        BoxLayout:
+            id: body_host
+            orientation: "vertical"
+            size_hint: None, None
+            x: 0
+            y: footer.height
+            width: root.width
+            height: root.height - top_bar.height - footer.height
+            BoxLayout:
+                orientation: "vertical"
+                padding: dp(12), dp(12), dp(12), dp(12)
+                spacing: dp(12)
+                size_hint: 1, 1
+                MDTextField:
+                    id: search_field
+                    size_hint_x: 1
+                    size_hint_y: None
+                    height: dp(48)
+                    mode: "rectangle"
+                    hint_text: "Улица, название"
+                    text: root.search_text
+                    on_text: root.update_search(self.text)
+                BoxLayout:
+                    size_hint_y: None
+                    height: dp(40)
+                    spacing: dp(12)
+                    ToggleButton:
+                        id: map_toggle
+                        text: "Карта"
+                        group: "addresses_view"
+                        background_normal: ''
+                        background_down: ''
+                        background_color: (0.2, 0.2, 0.2, 1) if self.state == 'down' else (0.9, 0.9, 0.9, 1)
+                        color: (1, 1, 1, 1) if self.state == 'down' else (0, 0, 0, 1)
+                        border: (0, 0, 0, 0)
+                        on_state: root.on_toggle_state("map", self.state)
+                    ToggleButton:
+                        id: list_toggle
+                        text: "Список"
+                        group: "addresses_view"
+                        background_normal: ''
+                        background_down: ''
+                        background_color: (0.2, 0.2, 0.2, 1) if self.state == 'down' else (0.9, 0.9, 0.9, 1)
+                        color: (1, 1, 1, 1) if self.state == 'down' else (0, 0, 0, 1)
+                        border: (0, 0, 0, 0)
+                        on_state: root.on_toggle_state("list", self.state)
+                ScreenManager:
+                    id: addresses_view_manager
+                    transition: NoTransition()
+                    size_hint: 1, 1
+                    Screen:
+                        name: "map"
+                        BoxLayout:
+                            orientation: "vertical"
+                            padding: 0
+                            MapView:
+                                id: map_view
+                                size_hint: 1, 1
+                                lat: 55.7558
+                                lon: 37.6176
+                                zoom: 11
+                                double_tap_zoom: True
+                    Screen:
+                        name: "list"
+                        MDCard:
+                            size_hint: 1, 1
+                            padding: 0
+                            radius: [dp(16)]
+                            md_bg_color: 1, 1, 1, 0.98
+                            elevation: 0
+                            ScrollView:
+                                size_hint: 1, 1
+                                do_scroll_x: False
+                                do_scroll_y: True
+                                scroll_wheel_distance: dp(72)
+                                scroll_type: ['bars', 'content']
+                                bar_width: 0
+                                effect_cls: "ScrollEffect"
+                                MDList:
+                                    id: address_list
+                                    padding: 0
+
+        # Footer
+        BoxLayout:
+            id: footer
+            size_hint_x: 1
+            size_hint_y: None
+            height: dp(88)
+            pos_hint: {"x": 0, "y": 0}
+            padding: dp(12), dp(8)
+            spacing: dp(12)
+            canvas.before:
+                Color:
+                    rgba: 1, 1, 1, 1
+                Rectangle:
+                    source: "assets/backgrounds/Footer.jpg"
+                    pos: self.pos
+                    size: self.size
+            FooterButton:
+                on_release: app.footer_addresses_click()
+                AnchorLayout:
+                    anchor_x: "center"
+                    anchor_y: "center"
+                    MDIcon:
+                        icon: "map-marker"
+                        size_hint: None, None
+                        width: dp(24)
+                        height: dp(24)
+                        theme_color: "Custom"
+                        color: 0, 0, 0, 1
+                AnchorLayout:
+                    anchor_x: "center"
+                    anchor_y: "center"
+                    Label:
+                        text: "Наши кофейни"
+                        font_size: "12sp"
+                        halign: "center"
+                        valign: "middle"
+                        text_size: self.size
+                        color: 0, 0, 0, 1
+            FooterLogoButton:
+            FooterButton:
+                on_release: app.footer_invite_click()
+                AnchorLayout:
+                    anchor_x: "center"
+                    anchor_y: "center"
+                    MDIcon:
+                        icon: "account-plus"
+                        size_hint: None, None
+                        width: dp(24)
+                        height: dp(24)
+                        theme_color: "Custom"
+                        color: 0, 0, 0, 1
+                AnchorLayout:
+                    anchor_x: "center"
+                    anchor_y: "center"
+                    Label:
+                        text: "Пригласить"
+                        font_size: "12sp"
+                        halign: "center"
+                        valign: "middle"
+                        text_size: self.size
+                        color: 0, 0, 0, 1
+
+        # Mail overlay (right drawer like menu)
+        FloatLayout:
+            id: mail_overlay_root
+            size_hint: None, None
+            size: 0, 0
+            opacity: 0
+            disabled: True
+            canvas.before:
+                Color:
+                    rgba: 0, 0, 0, 0.5
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+            Button:
+                background_color: 0,0,0,0
+                size_hint: 1, 1
+                disabled: self.parent.disabled
+                on_release: app.close_mail_overlay()
+            BoxLayout:
+                id: mail_panel
+                orientation: "vertical"
+                size_hint_y: 1
+                size_hint_x: None
+                width: root.width * 0.8
+                x: root.width
+                y: 0
+                padding: dp(16), dp(24)
+                spacing: dp(16)
+                canvas.before:
+                    Color:
+                        rgba: 1, 1, 1, 1
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+                BoxLayout:
+                    orientation: "horizontal"
+                    size_hint_y: None
+                    height: dp(40)
+                    spacing: dp(8)
+                    MDLabel:
+                        text: "Входящие"
+                        halign: "left"
+                        valign: "middle"
+                        text_size: self.size
+                        color: 0,0,0,1
+                    MDIconButton:
+                        icon: "close"
+                        theme_text_color: "Custom"
+                        text_color: 0,0,0,1
+                        on_release: app.close_mail_overlay()
+                ScrollView:
+                    size_hint_x: 1
+                    size_hint_y: 1
+                    do_scroll_x: False
+                    do_scroll_y: True
+                    scroll_wheel_distance: dp(72)
+                    scroll_type: ['bars', 'content']
+                    bar_width: 0
+                    effect_cls: "ScrollEffect"
+                    MDBoxLayout:
+                        id: mail_list
+                        orientation: "vertical"
+                        spacing: dp(10)
+                        size_hint_y: None
+                        height: self.minimum_height
+
+        LoyaltyOverlay:
+            id: loyalty_overlay_root
+

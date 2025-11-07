@@ -1,0 +1,187 @@
+## Общие импорты и компоненты для экранов
+#:import dp kivy.metrics.dp
+
+<FooterLogoButton@ButtonBehavior+AnchorLayout>:
+    anchor_x: "center"
+    anchor_y: "center"
+    background_color: 0, 0, 0, 0
+    on_release: app.open_loyalty_overlay()
+    canvas.before:
+        Color:
+            rgba: self.background_color
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    Image:
+        source: "assets/icons/Logo.jpg"
+        size_hint: None, None
+        width: dp(64)
+        height: dp(64)
+        allow_stretch: True
+        keep_ratio: True
+
+<LoyaltyOverlay@FloatLayout>:
+    size_hint: None, None
+    size: 0, 0
+    opacity: 0
+    disabled: True
+    Button:
+        background_color: 0, 0, 0, 0.5
+        size_hint: 1, 1
+        disabled: self.parent.disabled
+        on_release: app.close_loyalty_overlay()
+    BoxLayout:
+        id: loyalty_panel
+        orientation: "vertical"
+        size_hint_x: 1
+        size_hint_y: None
+        height: self.parent.height * 0.8 if self.parent else 0
+        y: -self.height
+        MDCard:
+            size_hint: 1, 1
+            radius: [dp(16), dp(16), 0, 0]
+            md_bg_color: 1, 1, 1, 1
+            elevation: 8
+            padding: 0, 0, 0, 0
+            orientation: "vertical"
+            ScrollView:
+                size_hint_y: 1
+                do_scroll_x: False
+                do_scroll_y: True
+                bar_width: 0
+                effect_cls: "ScrollEffect"
+                MDBoxLayout:
+                    orientation: "vertical"
+                    spacing: dp(24)
+                    size_hint_y: None
+                    height: self.minimum_height
+                    padding: dp(24), dp(24), dp(24), dp(24)
+                    MDBoxLayout:
+                        orientation: "vertical"
+                        spacing: dp(4)
+                        size_hint_y: None
+                        height: self.minimum_height
+                        MDLabel:
+                            text: "Назовите код бариста."
+                            font_name: "assets/fonts/minecraft.ttf"
+                            font_size: "14sp"
+                            halign: "center"
+                            valign: "middle"
+                            theme_text_color: "Custom"
+                            text_color: 0, 0, 0, 1
+                            size_hint_y: None
+                            height: self.texture_size[1]
+                        MDLabel:
+                            text: "Так мы сможем"
+                            font_name: "assets/fonts/minecraft.ttf"
+                            font_size: "14sp"
+                            halign: "center"
+                            valign: "middle"
+                            theme_text_color: "Custom"
+                            text_color: 0, 0, 0, 1
+                            size_hint_y: None
+                            height: self.texture_size[1]
+                        MDLabel:
+                            text: "идентифицировать вас в"
+                            font_name: "assets/fonts/minecraft.ttf"
+                            font_size: "14sp"
+                            halign: "center"
+                            valign: "middle"
+                            theme_text_color: "Custom"
+                            text_color: 0, 0, 0, 1
+                            size_hint_y: None
+                            height: self.texture_size[1]
+                        MDLabel:
+                            text: "программе лояльности,"
+                            font_name: "assets/fonts/minecraft.ttf"
+                            font_size: "14sp"
+                            halign: "center"
+                            valign: "middle"
+                            theme_text_color: "Custom"
+                            text_color: 0, 0, 0, 1
+                            size_hint_y: None
+                            height: self.texture_size[1]
+                        MDLabel:
+                            text: "чтобы начислить или"
+                            font_name: "assets/fonts/minecraft.ttf"
+                            font_size: "14sp"
+                            halign: "center"
+                            valign: "middle"
+                            theme_text_color: "Custom"
+                            text_color: 0, 0, 0, 1
+                            size_hint_y: None
+                            height: self.texture_size[1]
+                        MDLabel:
+                            text: "списать изумруды"
+                            font_name: "assets/fonts/minecraft.ttf"
+                            font_size: "14sp"
+                            halign: "center"
+                            valign: "middle"
+                            theme_text_color: "Custom"
+                            text_color: 0, 0, 0, 1
+                            size_hint_y: None
+                            height: self.texture_size[1]
+                    MDLabel:
+                        id: loyalty_code_label
+                        text: "13037"
+                        font_name: "assets/fonts/minecraft.ttf"
+                        font_size: "48sp"
+                        halign: "center"
+                        valign: "middle"
+                        theme_text_color: "Custom"
+                        text_color: 0, 0, 0, 1
+                        size_hint_y: None
+                        height: dp(60)
+                    AnchorLayout:
+                        anchor_x: "center"
+                        anchor_y: "center"
+                        size_hint_y: None
+                        height: dp(120)
+                        Image:
+                            source: "assets/icons/сode.jpg"
+                            size_hint: None, None
+                            width: dp(280)
+                            height: dp(120)
+                            allow_stretch: True
+                            keep_ratio: True
+                    MDLabel:
+                        id: loyalty_code_label_small
+                        text: "13037"
+                        font_name: "assets/fonts/minecraft.ttf"
+                        font_size: "18sp"
+                        halign: "center"
+                        valign: "middle"
+                        theme_text_color: "Custom"
+                        text_color: 0, 0, 0, 1
+                        size_hint_y: None
+                        height: dp(30)
+            BoxLayout:
+                size_hint_y: None
+                height: dp(56) + dp(32)
+                padding: dp(16), dp(16), dp(16), dp(16)
+                Button:
+                    size_hint: 1, 1
+                    background_color: 0, 0, 0, 0
+                    on_release: app.close_loyalty_overlay()
+                    text: "Закрыть"
+                    font_name: "assets/fonts/minecraft.ttf"
+                    font_size: "16sp"
+                    color: 1, 1, 1, 1
+                    canvas.before:
+                        Color:
+                            rgba: 0.2, 0.8, 0.4, 1
+                        RoundedRectangle:
+                            pos: self.pos
+                            size: self.size
+                            radius: [dp(12), dp(12), dp(12), dp(12)]
+
+<BaseScreen@FloatLayout>:
+    # Background only
+    canvas.before:
+        Color:
+            rgba: 1, 1, 1, 1
+        Rectangle:
+            source: "assets/backgrounds/MainBackground.jpg"
+            pos: self.pos
+            size: self.size
+

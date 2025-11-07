@@ -1,0 +1,2936 @@
+#:import dp kivy.metrics.dp
+#:include src/widgets/base_screen.kv
+
+
+
+ScreenManager:
+    id: screen_manager
+    BootstrupScreen:
+    MainScreen:
+    # Другие экраны динамически добавляются
+
+<BootstrupScreen@Screen>:
+    name: 'bootstrup'
+    on_enter: app.start_bootstrap()
+    FloatLayout:
+        Video:
+            id: boot_video
+            source: app.bootstrap_video_source
+            state: 'play'
+            eos: 'stop'
+            allow_stretch: True
+            keep_ratio: True
+            size_hint: 1, 1
+            pos_hint: {"center_x": 0.5, "center_y": 0.5}
+            on_eos: app.on_bootstrap_video_end()
+        AnchorLayout:
+            anchor_x: "center"
+            anchor_y: "bottom"
+            padding: dp(20)
+            MDBoxLayout:
+                orientation: "vertical"
+                spacing: dp(12)
+                padding: dp(20)
+                size_hint: None, None
+                width: min(root.width * 0.8, dp(360))
+                height: self.minimum_height
+                md_bg_color: 0, 0, 0, 0.45
+                radius: [18, 18, 18, 18]
+                MDSpinner:
+                    id: loading_spinner
+                    size_hint: None, None
+                    size: dp(48), dp(48)
+                    active: True
+                    line_width: dp(3)
+                MDLabel:
+                    id: status_label
+                    text: "Подготовка..."
+                    halign: "center"
+                    theme_text_color: "Custom"
+                    text_color: 1, 1, 1, 0.95
+                    font_size: "16sp"
+
+<MainScreen@Screen>:
+    name: 'main'
+    MainRoot:
+
+<Label>:
+    font_name: "assets/fonts/minecraft.ttf"
+
+<MDLabel>:
+    font_name: "assets/fonts/minecraft.ttf"
+
+<ScrollableTextLabel@MDLabel>:
+    halign: "left"
+    valign: "top"
+    text_size: self.width - dp(24), None
+    padding: dp(12), dp(6)
+    size_hint_y: None
+    height: self.texture_size[1] + dp(12)
+    theme_text_color: "Custom"
+    text_color: 0, 0, 0, 0.82
+
+<MenuItem@ButtonBehavior+GridLayout>:
+    # Кликабельный пункт меню: 2 колонки (иконка, текст)
+    # Свойства:
+    icon: ''
+    text: ''
+    target: ''
+    cols: 2
+    size_hint_y: None
+    height: dp(48)
+    spacing: dp(16)
+    padding: dp(16), 0, dp(12), 0
+    on_release: app.overlay_nav(self.target)
+    MDIcon:
+        icon: root.icon
+        theme_color: "Custom"
+        color: 1, 1, 1, 0.82
+        size_hint_x: None
+        width: dp(24)
+    MDLabel:
+        text: root.text
+        font_name: "assets/fonts/minecraft.ttf"
+        theme_text_color: "Custom"
+        text_color: 1, 1, 1, 0.82
+        halign: "left"
+        valign: "middle"
+        text_size: self.width, None
+        size_hint_y: None
+        height: self.texture_size[1] + dp(6)
+        padding_x: dp(4)
+
+<MDList>:
+    font_name: "assets/fonts/minecraft.ttf"
+
+<OneLineIconListItem>:
+    font_name: "assets/fonts/minecraft.ttf"
+
+<FooterButton@ButtonBehavior+BoxLayout>:
+    orientation: "vertical"
+    spacing: dp(4)
+    padding: 0, dp(2), 0, 0
+    size_hint: 1, None
+    height: dp(64)
+    background_color: 0, 0, 0, 0
+    canvas.before:
+        Color:
+            rgba: self.background_color
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+<MainRoot@BaseScreen>:
+
+    # Top bar (anchored to top)
+    BoxLayout:
+        id: top_bar
+        size_hint_x: 1
+        size_hint_y: None
+        height: dp(68)
+        pos_hint: {"x": 0, "top": 1}
+        padding: dp(12), dp(8)
+        spacing: dp(12)
+        # Left image (menu)
+        AnchorLayout:
+            anchor_x: "left"
+            anchor_y: "center"
+            MDIconButton:
+                icon: "menu"
+                size_hint: None, None
+                width: dp(28)
+                height: dp(28)
+                theme_text_color: "Custom"
+                text_color: 0, 0, 0, 1
+                on_release: app.open_overlay()
+        # Title placeholder (center)
+        AnchorLayout:
+            anchor_x: "center"
+            anchor_y: "center"
+            BoxLayout:
+                orientation: "horizontal"
+                spacing: dp(0.5)
+                size_hint: None, None
+                height: dp(28)
+                width: dp(78)
+                padding: 0, dp(4), 0, 0
+                Label:
+                    text: "К"
+                    font_size: "44sp"
+                    color: 0, 0, 0, 1
+                    size_hint: None, None
+                    size: self.texture_size
+                BoxLayout:
+                    orientation: "vertical"
+                    size_hint: None, None
+                    height: dp(50)
+                    width: dp(36)
+                    padding: 0, 0, 0, 0
+                    spacing: dp(0)
+                    AnchorLayout:
+                        anchor_x: "left"
+                        anchor_y: "top"
+                        Label:
+                            text: "уб"
+                            font_size: "28sp"
+                            color: 0, 0, 0, 1
+                            size_hint: None, None
+                            size: self.texture_size
+                    AnchorLayout:
+                        anchor_x: "left"
+                        anchor_y: "bottom"
+                        Label:
+                            text: "офе"
+                            font_size: "20sp"
+                            color: 0, 0, 0, 1
+                            size_hint: None, None
+                            size: self.texture_size
+
+        # Right image (mail)
+        AnchorLayout:
+            anchor_x: "right"
+            anchor_y: "center"
+            MDIconButton:
+                icon: "email"
+                size_hint: None, None
+                width: dp(28)
+                height: dp(28)
+                theme_color: "Custom"
+                color: 0, 0, 0, 1
+                on_release: app.open_mail_overlay()
+
+    # Body (fills space between top bar and footer)
+    BoxLayout:
+        id: body_host
+        orientation: "vertical"
+        size_hint: None, None
+        x: 0
+        y: footer.height
+        width: root.width
+        height: root.height - top_bar.height - footer.height
+        ScrollView:
+            id: main_scroll_view
+            size_hint: 1, 1
+            do_scroll_x: False
+            do_scroll_y: True
+            scroll_wheel_distance: dp(72)
+            scroll_type: ['bars', 'content']
+            bar_width: 0
+            effect_cls: "ScrollEffect"
+            MDBoxLayout:
+                id: body
+                orientation: "vertical"
+                spacing: dp(16)
+                padding: dp(12), dp(12), dp(12), dp(12)
+                size_hint_y: None
+                height: self.minimum_height
+
+                # Tile 1
+                MDCard:
+                    size_hint: 1, None
+                    height: dp(180)
+                    radius: [16, 16, 16, 16]
+                    md_bg_color: 1, 1, 1, 0
+                    on_release: app.open_screen_by_name('profile')
+                    canvas.before:
+                        Color:
+                            rgba: 1, 1, 1, 1
+                        RoundedRectangle:
+                            source: "assets/tiles/All Friends.jpg"
+                            pos: self.pos
+                            size: self.size
+                            radius: self.radius
+
+                # Tile 2
+                MDCard:
+                    size_hint: 1, None
+                    height: dp(180)
+                    radius: [16, 16, 16, 16]
+                    md_bg_color: 1, 1, 1, 0
+                    on_release: app.open_loyalty_program_overlay()
+                    canvas.before:
+                        Color:
+                            rgba: 1, 1, 1, 1
+                        RoundedRectangle:
+                            source: "assets/tiles/NewLoayaloty.jpg"
+                            pos: self.pos
+                            size: self.size
+                            radius: self.radius
+
+                # Section header for carousel (aligned with tiles)
+                BoxLayout:
+                    size_hint_y: None
+                    height: dp(36)
+                    padding: dp(12), dp(6), dp(12), dp(6)
+                    spacing: 0
+                    Label:
+                        text: "Сезонное меню"
+                        size_hint_x: 0.5
+                        text_size: self.size
+                        halign: "left"
+                        valign: "middle"
+                        font_size: "12sp"
+                        color: 0, 0, 0, 1
+                    Label:
+                        text: "Смотреть все"
+                        size_hint_x: 0.5
+                        text_size: self.size
+                        halign: "right"
+                        valign: "middle"
+                        shorten: True
+                        font_size: "12sp"
+                        color: 0, 0, 0, 1
+
+                # Carousel with 4 slides
+                Carousel:
+                    size_hint_y: None
+                    height: dp(180)
+                    loop: True
+                    direction: "right"
+                    scroll_timeout: 200
+                    min_move: 0.02
+                    spacing: dp(12)
+
+                    # Slide 1
+                    BoxLayout:
+                        padding: dp(6), 0, dp(6), 0
+                        MDCard:
+                            size_hint: 1, 1
+                            radius: [16, 16, 16, 16]
+                            md_bg_color: 1, 1, 1, 0
+                            on_release: app.open_drinks_menu_overlay()
+                            canvas.before:
+                                Color:
+                                    rgba: 1, 1, 1, 1
+                                RoundedRectangle:
+                                    source: "assets/tiles/Lemonade.jpg"
+                                    pos: self.pos
+                                    size: self.size
+                                    radius: self.radius
+
+                    # Slide 2
+                    BoxLayout:
+                        padding: dp(6), 0, dp(6), 0
+                        MDCard:
+                            size_hint: 1, 1
+                            radius: [16, 16, 16, 16]
+                            md_bg_color: 1, 1, 1, 0
+                            on_release: app.open_drinks_menu_overlay()
+                            canvas.before:
+                                Color:
+                                    rgba: 1, 1, 1, 1
+                                RoundedRectangle:
+                                    source: "assets/tiles/DoubleEspresso.jpg"
+                                    pos: self.pos
+                                    size: self.size
+                                    radius: self.radius
+
+                    # Slide 3
+                    BoxLayout:
+                        padding: dp(6), 0, dp(6), 0
+                        MDCard:
+                            size_hint: 1, 1
+                            radius: [16, 16, 16, 16]
+                            md_bg_color: 1, 1, 1, 0
+                            on_release: app.open_drinks_menu_overlay()
+                            canvas.before:
+                                Color:
+                                    rgba: 1, 1, 1, 1
+                                RoundedRectangle:
+                                    source: "assets/tiles/Latte.jpg"
+                                    pos: self.pos
+                                    size: self.size
+                                    radius: self.radius
+
+                    # Slide 4
+                    BoxLayout:
+                        padding: dp(6), 0, 0, 0
+                        MDCard:
+                            size_hint: 1, 1
+                            radius: [16, 16, 16, 16]
+                            md_bg_color: 1, 1, 1, 0
+                            on_release: app.open_drinks_menu_overlay()
+                            canvas.before:
+                                Color:
+                                    rgba: 1, 1, 1, 1
+                                RoundedRectangle:
+                                    source: "assets/tiles/Raf.jpg"
+                                    pos: self.pos
+                                    size: self.size
+                                    radius: self.radius
+
+                # Section header for share (aligned with tiles)
+                BoxLayout:
+                    size_hint_y: None
+                    height: dp(36)
+                    padding: dp(12), dp(6), dp(12), dp(6)
+                    spacing: 0
+                    Label:
+                        text: "Акции"
+                        size_hint_x: 0.5
+                        text_size: self.size
+                        halign: "left"
+                        valign: "middle"
+                        font_size: "12sp"
+                        color: 0, 0, 0, 1
+                    Label:
+                        text: "Смотреть все"
+                        size_hint_x: 0.5
+                        text_size: self.size
+                        halign: "right"
+                        valign: "middle"
+                        shorten: True
+                        font_size: "12sp"
+                        color: 0, 0, 0, 1
+
+                # Tile 4
+                MDCard:
+                    size_hint: 1, None
+                    height: dp(180)
+                    radius: [16, 16, 16, 16]
+                    md_bg_color: 1, 1, 1, 0
+                    on_release: app.open_referral_overlay()
+                    canvas.before:
+                        Color:
+                            rgba: 1, 1, 1, 1
+                        RoundedRectangle:
+                            source: "assets/tiles/Share.jpg"
+                            pos: self.pos
+                            size: self.size
+                            radius: self.radius
+
+    # Bottom bar (anchored to bottom)
+    BoxLayout:
+        id: footer
+        size_hint_x: 1
+        size_hint_y: None
+        height: dp(88)
+        pos_hint: {"x": 0, "y": 0}
+        padding: dp(12), dp(8)
+        spacing: dp(12)
+        canvas.before:
+            Color:
+                rgba: 1, 1, 1, 1
+            Rectangle:
+                source: "assets/backgrounds/Footer.jpg"
+                pos: self.pos
+                size: self.size
+        FooterButton:
+            on_release: app.footer_addresses_click()
+            AnchorLayout:
+                anchor_x: "center"
+                anchor_y: "center"
+                MDIcon:
+                    icon: "map-marker"
+                    size_hint: None, None
+                    width: dp(24)
+                    height: dp(24)
+                    theme_color: "Custom"
+                    color: 0, 0, 0, 1
+            AnchorLayout:
+                anchor_x: "center"
+                anchor_y: "center"
+                Label:
+                    text: "Наши кофейни"
+                    font_size: "12sp"
+                    halign: "center"
+                    valign: "middle"
+                    text_size: self.size
+                    color: 0, 0, 0, 1
+        FooterLogoButton:
+        FooterButton:
+            on_release: app.footer_invite_click()
+            AnchorLayout:
+                anchor_x: "center"
+                anchor_y: "center"
+                MDIcon:
+                    icon: "account-plus"
+                    size_hint: None, None
+                    width: dp(24)
+                    height: dp(24)
+                    theme_color: "Custom"
+                    color: 0, 0, 0, 1
+            AnchorLayout:
+                anchor_x: "center"
+                anchor_y: "center"
+                Label:
+                    text: "Пригласить"
+                    font_size: "12sp"
+                    halign: "center"
+                    valign: "middle"
+                    text_size: self.size
+                    color: 0, 0, 0, 1
+
+    # Left overlay (80% width)
+    FloatLayout:
+        id: overlay_root
+        size_hint: None, None
+        size: 0, 0
+        opacity: 0
+        disabled: True
+        canvas.before:
+            Color:
+                rgba: 0, 0, 0, 0.5
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        Button:
+            background_color: 0,0,0,0
+            size_hint: 1, 1
+            disabled: self.parent.disabled
+            on_release: app.close_overlay()
+        BoxLayout:
+            id: overlay_panel
+            orientation: "vertical"
+            size_hint_y: 1
+            size_hint_x: None
+            width: root.width * 0.8
+            x: -self.width
+            y: 0
+            padding: dp(16), dp(24)
+            spacing: dp(16)
+            canvas.before:
+                Color:
+                    rgba: 0, 0, 0, 1
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+            BoxLayout:
+                orientation: "vertical"
+                size_hint_y: None
+                height: title_line1.texture_size[1] + title_line2.texture_size[1]
+                spacing: dp(2)
+                MDLabel:
+                    id: title_line1
+                    text: "Куб"
+                    font_size: "28sp"
+                    halign: "left"
+                    valign: "top"
+                    text_size: self.size
+                    size_hint_y: None
+                    height: self.texture_size[1]
+                    color: 1,1,1,1
+                MDLabel:
+                    id: title_line2
+                    text: "Кофе"
+                    font_size: "24sp"
+                    halign: "left"
+                    valign: "top"
+                    text_size: self.size
+                    size_hint_y: None
+                    height: self.texture_size[1]
+                    color: 1,1,1,1
+
+            ScrollView:
+                size_hint_x: 1
+                size_hint_y: None
+                height: overlay_panel.height * 0.8
+                do_scroll_x: False
+                do_scroll_y: True
+                scroll_wheel_distance: dp(72)
+                scroll_type: ['bars', 'content']
+                bar_width: 0
+                effect_cls: "ScrollEffect"
+                MDBoxLayout:
+                    id: overlay_menu
+                    orientation: "vertical"
+                    spacing: dp(28)
+                    size_hint_y: None
+                    height: self.minimum_height
+
+                    # Пункты меню (иконка + текст), вся строка кликабельна
+                    MDBoxLayout:
+                        orientation: "vertical"
+                        spacing: dp(20)
+                        size_hint_y: None
+                        height: self.minimum_height
+                        MenuItem:
+                            icon: "account"
+                            text: "Профиль"
+                            target: "profile"
+                        MenuItem:
+                            icon: "cart"
+                            text: "История покупок"
+                            target: "history"
+                        MenuItem:
+                            icon: "gift"
+                            text: "Программа лояльности"
+                            target: "loyalty"
+                        MenuItem:
+                            icon: "newspaper"
+                            text: "Новости"
+                            target: "news"
+                        MenuItem:
+                            icon: "silverware"
+                            text: "Наше меню"
+                            target: "our_menu"
+                        MenuItem:
+                            icon: "ticket-percent"
+                            text: "Промокоды"
+                            target: "promo"
+                        MenuItem:
+                            icon: "account-plus"
+                            text: "Пригласить друга"
+                            target: "referral"
+                        MenuItem:
+                            icon: "map-marker"
+                            text: "Кофейни"
+                            target: "addresses"
+                        MenuItem:
+                            icon: "help-circle"
+                            text: "Частые вопросы"
+                            target: "faq"
+                        MenuItem:
+                            icon: "information"
+                            text: "О компании"
+                            target: "about"
+                        MenuItem:
+                            icon: "briefcase"
+                            text: "Работай у нас"
+                            target: "work"
+                        # Дополнительные пункты
+                        MenuItem:
+                            icon: "email"
+                            text: "Написать нам"
+                            target: "write_us"
+                        MenuItem:
+                            icon: "phone"
+                            text: "Контакты"
+                            target: "contacts"
+                        MenuItem:
+                            icon: "file-document-outline"
+                            text: "Соглашение об обработке персональных данных"
+                            target: "privacy_policy"
+            
+            # Нижняя плашка авторства
+            BoxLayout:
+                size_hint_y: None
+                height: dp(56)
+                padding: 0, dp(8)
+                AnchorLayout:
+                    anchor_x: "center"
+                    anchor_y: "center"
+                    MDLabel:
+                        text: "Разработано\nPrime's Team"
+                        halign: "center"
+                        valign: "middle"
+                        text_size: self.size
+                        font_size: "12sp"
+                        color: 1,1,1,0.9
+
+
+    # Mail overlay (right drawer like menu)
+    FloatLayout:
+        id: mail_overlay_root
+        size_hint: None, None
+        size: 0, 0
+        opacity: 0
+        disabled: True
+        canvas.before:
+            Color:
+                rgba: 0, 0, 0, 0.5
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        Button:
+            background_color: 0,0,0,0
+            size_hint: 1, 1
+            disabled: self.parent.disabled
+            on_release: app.close_mail_overlay()
+        BoxLayout:
+            id: mail_panel
+            orientation: "vertical"
+            size_hint_y: 1
+            size_hint_x: None
+            width: root.width * 0.8
+            x: root.width
+            y: 0
+            padding: dp(16), dp(24)
+            spacing: dp(16)
+            canvas.before:
+                Color:
+                    rgba: 1, 1, 1, 1
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+            BoxLayout:
+                orientation: "horizontal"
+                size_hint_y: None
+                height: dp(40)
+                spacing: dp(8)
+                MDLabel:
+                    text: "Входящие"
+                    halign: "left"
+                    valign: "middle"
+                    text_size: self.size
+                    color: 0,0,0,1
+                MDIconButton:
+                    icon: "close"
+                    theme_text_color: "Custom"
+                    text_color: 0,0,0,1
+                    on_release: app.close_mail_overlay()
+            ScrollView:
+                size_hint_x: 1
+                size_hint_y: 1
+                do_scroll_x: False
+                do_scroll_y: True
+                scroll_wheel_distance: dp(72)
+                scroll_type: ['bars', 'content']
+                bar_width: 0
+                effect_cls: "ScrollEffect"
+                MDBoxLayout:
+                    id: mail_list
+                    orientation: "vertical"
+                    spacing: dp(10)
+                    size_hint_y: None
+                    height: self.minimum_height
+
+    # Loyalty overlay (центрированный оверлей с кодом программы лояльности)
+    LoyaltyOverlay:
+        id: loyalty_overlay_root
+
+    # Drinks Menu Overlay (меню напитков BY ALUCARD)
+    FloatLayout:
+        id: drinks_menu_overlay_root
+        size_hint: None, None
+        size: 0, 0
+        opacity: 0
+        disabled: True
+        Button:
+            background_color: 0, 0, 0, 0.5
+            size_hint: 1, 1
+            disabled: self.parent.disabled
+            on_release: app.close_drinks_menu_overlay()
+        # Панель оверлея, выезжает снизу и занимает 80% высоты
+        BoxLayout:
+            id: drinks_menu_panel
+            orientation: "vertical"
+            size_hint_x: 1
+            size_hint_y: None
+            height: self.parent.height * 0.8 if self.parent else 0
+            y: -self.height
+            MDCard:
+                size_hint: 1, 1
+                radius: [16, 16, 0, 0]
+                md_bg_color: 1, 1, 1, 1
+                elevation: 8
+                padding: 0, 0, 0, 0
+                orientation: "vertical"
+                
+                # Прокручиваемый контент
+                ScrollView:
+                    size_hint_y: 1
+                    do_scroll_x: False
+                    do_scroll_y: True
+                    bar_width: 0
+                    effect_cls: "ScrollEffect"
+                    MDBoxLayout:
+                        orientation: "vertical"
+                        spacing: dp(16)
+                        size_hint_y: None
+                        height: self.minimum_height
+                        padding: dp(24), dp(24), dp(24), dp(24)
+                        
+                        # Заголовок
+                        MDLabel:
+                            text: "BY ALUCARD"
+                            font_name: "assets/fonts/minecraft.ttf"
+                            font_size: "18sp"
+                            halign: "left"
+                            valign: "middle"
+                            theme_text_color: "Custom"
+                            text_color: 0, 0, 0, 1
+                            size_hint_y: None
+                            height: self.texture_size[1]
+                        
+                        # Сетка карточек напитков 2 колонки
+                        BoxLayout:
+                            orientation: "horizontal"
+                            size_hint_x: 1
+                            size_hint_y: None
+                            height: self.minimum_height
+                            Widget:
+                                size_hint_x: None
+                                width: 0
+                            GridLayout:
+                                id: grid_layout
+                                cols: 2
+                                spacing: dp(12)
+                                size_hint_x: None
+                                size_hint_y: None
+                                width: self.minimum_width
+                                height: self.minimum_height
+                                
+                                # Карточка 1: РАФ НОРВЕГИЯ
+                                BoxLayout:
+                                    size_hint_x: None
+                                    size_hint_y: None
+                                    width: dp(160)
+                                    height: dp(200)
+                                    orientation: "vertical"
+                                    padding: dp(16), dp(16), dp(16), dp(16)
+                                    spacing: dp(8)
+                                    canvas.before:
+                                        Color:
+                                            rgba: 0.353, 0.420, 0.310, 1
+                                        RoundedRectangle:
+                                            pos: self.pos
+                                            size: self.size
+                                            radius: [dp(12), dp(12), dp(12), dp(12)]
+                                    AnchorLayout:
+                                        anchor_x: "center"
+                                        anchor_y: "center"
+                                        size_hint_y: None
+                                        height: dp(80)
+                                        Image:
+                                            source: "assets/drinks/Raf(cream-brule).png"
+                                            size_hint: None, None
+                                            width: dp(60)
+                                            height: dp(80)
+                                            allow_stretch: True
+                                            keep_ratio: True
+                                    MDLabel:
+                                        text: "РАФ НОРВЕГИЯ"
+                                        font_name: "assets/fonts/minecraft.ttf"
+                                        font_size: "12sp"
+                                        halign: "center"
+                                        theme_text_color: "Custom"
+                                        text_color: 1, 1, 1, 1
+                                        size_hint_y: None
+                                        height: self.texture_size[1]
+                                    BoxLayout:
+                                        orientation: "horizontal"
+                                        size_hint_y: None
+                                        height: dp(40)
+                                        MDBoxLayout:
+                                            orientation: "vertical"
+                                            spacing: dp(2)
+                                            size_hint_x: 0.5
+                                            MDLabel:
+                                                text: "Ккал: 280"
+                                                font_name: "assets/fonts/minecraft.ttf"
+                                                font_size: "10sp"
+                                                halign: "left"
+                                                theme_text_color: "Custom"
+                                                text_color: 1, 1, 1, 1
+                                                size_hint_y: None
+                                                height: self.texture_size[1]
+                                            MDLabel:
+                                                text: "Б: 12 Ж: 10 У: 42"
+                                                font_name: "assets/fonts/minecraft.ttf"
+                                                font_size: "10sp"
+                                                halign: "left"
+                                                theme_text_color: "Custom"
+                                                text_color: 1, 1, 1, 1
+                                                size_hint_y: None
+                                                height: self.texture_size[1]
+                                        BoxLayout:
+                                            orientation: "horizontal"
+                                            size_hint_x: 0.5
+                                            spacing: dp(8)
+                                            AnchorLayout:
+                                                anchor_x: "left"
+                                                anchor_y: "bottom"
+                                                size_hint_x: 0.5
+                                                size_hint_y: 1
+                                                Button:
+                                                    size_hint: None, None
+                                                    size: dp(60), dp(28)
+                                                    background_color: 0, 0, 0, 0
+                                                    text: "290"
+                                                    font_name: "assets/fonts/minecraft.ttf"
+                                                    font_size: "12sp"
+                                                    color: 1, 1, 1, 1
+                                                    canvas.before:
+                                                        Color:
+                                                            rgba: 0.2, 0.8, 0.4, 1
+                                                        RoundedRectangle:
+                                                            pos: self.pos
+                                                            size: self.size
+                                                            radius: [dp(6), dp(6), dp(6), dp(6)]
+                                        AnchorLayout:
+                                            anchor_x: "right"
+                                            anchor_y: "bottom"
+                                            size_hint_x: 0.5
+                                            size_hint_y: 1
+                                            MDLabel:
+                                                text: "400 мл"
+                                                font_name: "assets/fonts/minecraft.ttf"
+                                                font_size: "10sp"
+                                                halign: "right"
+                                                theme_text_color: "Custom"
+                                                text_color: 1, 1, 1, 1
+                                                size_hint_y: None
+                                                height: self.texture_size[1]
+                                
+                                # Карточка 2: РАФ КРЕМ БРЮЛЕ
+                                BoxLayout:
+                                    size_hint_x: None
+                                    size_hint_y: None
+                                    width: dp(160)
+                                    height: dp(200)
+                                    orientation: "vertical"
+                                    padding: dp(16), dp(16), dp(16), dp(16)
+                                    spacing: dp(8)
+                                    canvas.before:
+                                        Color:
+                                            rgba: 0.353, 0.420, 0.310, 1
+                                        RoundedRectangle:
+                                            pos: self.pos
+                                            size: self.size
+                                            radius: [dp(12), dp(12), dp(12), dp(12)]
+                                    AnchorLayout:
+                                        anchor_x: "center"
+                                        anchor_y: "center"
+                                        size_hint_y: None
+                                        height: dp(80)
+                                        Image:
+                                            source: "assets/drinks/Raf(cream-brule)-1.png"
+                                            size_hint: None, None
+                                            width: dp(60)
+                                            height: dp(80)
+                                            allow_stretch: True
+                                            keep_ratio: True
+                                    MDLabel:
+                                        text: "РАФ КРЕМ БРЮЛЕ"
+                                        font_name: "assets/fonts/minecraft.ttf"
+                                        font_size: "12sp"
+                                        halign: "center"
+                                        theme_text_color: "Custom"
+                                        text_color: 1, 1, 1, 1
+                                        size_hint_y: None
+                                        height: self.texture_size[1]
+                                    BoxLayout:
+                                        orientation: "horizontal"
+                                        size_hint_y: None
+                                        height: dp(40)
+                                        MDBoxLayout:
+                                            orientation: "vertical"
+                                            spacing: dp(2)
+                                            size_hint_x: 0.5
+                                            MDLabel:
+                                                text: "Ккал: 280"
+                                                font_name: "assets/fonts/minecraft.ttf"
+                                                font_size: "10sp"
+                                                halign: "left"
+                                                theme_text_color: "Custom"
+                                                text_color: 1, 1, 1, 1
+                                                size_hint_y: None
+                                                height: self.texture_size[1]
+                                            MDLabel:
+                                                text: "Б: 10 Ж: 11 У: 35"
+                                                font_name: "assets/fonts/minecraft.ttf"
+                                                font_size: "10sp"
+                                                halign: "left"
+                                                theme_text_color: "Custom"
+                                                text_color: 1, 1, 1, 1
+                                                size_hint_y: None
+                                                height: self.texture_size[1]
+                                        BoxLayout:
+                                            orientation: "horizontal"
+                                            size_hint_x: 0.5
+                                            spacing: dp(8)
+                                            AnchorLayout:
+                                                anchor_x: "left"
+                                                anchor_y: "bottom"
+                                                size_hint_x: 0.5
+                                                size_hint_y: 1
+                                                Button:
+                                                    size_hint: None, None
+                                                    size: dp(60), dp(28)
+                                                    background_color: 0, 0, 0, 0
+                                                    text: "290"
+                                                    font_name: "assets/fonts/minecraft.ttf"
+                                                    font_size: "12sp"
+                                                    color: 1, 1, 1, 1
+                                                    canvas.before:
+                                                        Color:
+                                                            rgba: 0.2, 0.8, 0.4, 1
+                                                        RoundedRectangle:
+                                                            pos: self.pos
+                                                            size: self.size
+                                                            radius: [dp(6), dp(6), dp(6), dp(6)]
+                                        AnchorLayout:
+                                            anchor_x: "right"
+                                            anchor_y: "bottom"
+                                            size_hint_x: 0.5
+                                            size_hint_y: 1
+                                            MDLabel:
+                                                text: "400 мл"
+                                                font_name: "assets/fonts/minecraft.ttf"
+                                                font_size: "10sp"
+                                                halign: "right"
+                                                theme_text_color: "Custom"
+                                                text_color: 1, 1, 1, 1
+                                                size_hint_y: None
+                                                height: self.texture_size[1]
+                                
+                                # Карточка 3: ШОКОЛАТТЕ БАНАНОВЫЙ БРАУНИ
+                                BoxLayout:
+                                    size_hint_x: None
+                                    size_hint_y: None
+                                    width: dp(160)
+                                    height: dp(200)
+                                    orientation: "vertical"
+                                    padding: dp(16), dp(16), dp(16), dp(16)
+                                    spacing: dp(8)
+                                    canvas.before:
+                                        Color:
+                                            rgba: 0.353, 0.420, 0.310, 1
+                                        RoundedRectangle:
+                                            pos: self.pos
+                                            size: self.size
+                                            radius: [dp(12), dp(12), dp(12), dp(12)]
+                                    AnchorLayout:
+                                        anchor_x: "center"
+                                        anchor_y: "center"
+                                        size_hint_y: None
+                                        height: dp(80)
+                                        Image:
+                                            source: "assets/drinks/ChocolatteBananaBrouni.png"
+                                            size_hint: None, None
+                                            width: dp(60)
+                                            height: dp(80)
+                                            allow_stretch: True
+                                            keep_ratio: True
+                                    MDLabel:
+                                        text: "ШОКОЛАТТЕ БАНАНОВЫЙ БРАУНИ"
+                                        font_name: "assets/fonts/minecraft.ttf"
+                                        font_size: "11sp"
+                                        halign: "center"
+                                        theme_text_color: "Custom"
+                                        text_color: 1, 1, 1, 1
+                                        size_hint_y: None
+                                        height: self.texture_size[1]
+                                    BoxLayout:
+                                        orientation: "horizontal"
+                                        size_hint_y: None
+                                        height: dp(40)
+                                        MDBoxLayout:
+                                            orientation: "vertical"
+                                            spacing: dp(2)
+                                            size_hint_x: 0.5
+                                            MDLabel:
+                                                text: "Ккал: 820"
+                                                font_name: "assets/fonts/minecraft.ttf"
+                                                font_size: "10sp"
+                                                halign: "left"
+                                                theme_text_color: "Custom"
+                                                text_color: 1, 1, 1, 1
+                                                size_hint_y: None
+                                                height: self.texture_size[1]
+                                            MDLabel:
+                                                text: "Б: 24 Ж: 30 У: 114"
+                                                font_name: "assets/fonts/minecraft.ttf"
+                                                font_size: "10sp"
+                                                halign: "left"
+                                                theme_text_color: "Custom"
+                                                text_color: 1, 1, 1, 1
+                                                size_hint_y: None
+                                                height: self.texture_size[1]
+                                        BoxLayout:
+                                            orientation: "horizontal"
+                                            size_hint_x: 0.5
+                                            spacing: dp(8)
+                                        AnchorLayout:
+                                            anchor_x: "left"
+                                            anchor_y: "bottom"
+                                            size_hint_x: 0.5
+                                            size_hint_y: 1
+                                            Button:
+                                                size_hint: None, None
+                                                size: dp(60), dp(28)
+                                                background_color: 0, 0, 0, 0
+                                                text: "390"
+                                                font_name: "assets/fonts/minecraft.ttf"
+                                                font_size: "12sp"
+                                                color: 1, 1, 1, 1
+                                                canvas.before:
+                                                    Color:
+                                                        rgba: 0.2, 0.8, 0.4, 1
+                                                    RoundedRectangle:
+                                                        pos: self.pos
+                                                        size: self.size
+                                                        radius: [dp(6), dp(6), dp(6), dp(6)]
+                                        AnchorLayout:
+                                            anchor_x: "right"
+                                            anchor_y: "bottom"
+                                            size_hint_x: 0.5
+                                            size_hint_y: 1
+                                            MDLabel:
+                                                text: "400 мл"
+                                                font_name: "assets/fonts/minecraft.ttf"
+                                                font_size: "10sp"
+                                                halign: "right"
+                                                theme_text_color: "Custom"
+                                                text_color: 1, 1, 1, 1
+                                                size_hint_y: None
+                                                height: self.texture_size[1]
+                                
+                                # Карточка 4: ЛАТТЕ ВИШНЕВЫЙ КОМПОТИК
+                                BoxLayout:
+                                    size_hint_x: None
+                                    size_hint_y: None
+                                    width: dp(160)
+                                    height: dp(200)
+                                    orientation: "vertical"
+                                    padding: dp(16), dp(16), dp(16), dp(16)
+                                    spacing: dp(8)
+                                    canvas.before:
+                                        Color:
+                                            rgba: 0.353, 0.420, 0.310, 1
+                                        RoundedRectangle:
+                                            pos: self.pos
+                                            size: self.size
+                                            radius: [dp(12), dp(12), dp(12), dp(12)]
+                                    AnchorLayout:
+                                        anchor_x: "center"
+                                        anchor_y: "center"
+                                        size_hint_y: None
+                                        height: dp(80)
+                                    Image:
+                                        source: "assets/drinks/latte(compotik).png"
+                                        size_hint: None, None
+                                        width: dp(60)
+                                        height: dp(80)
+                                        allow_stretch: True
+                                        keep_ratio: True
+                                    MDLabel:
+                                        text: "ЛАТТЕ ВИШНЕВЫЙ КОМПОТИК"
+                                        font_name: "assets/fonts/minecraft.ttf"
+                                        font_size: "11sp"
+                                        halign: "center"
+                                        theme_text_color: "Custom"
+                                        text_color: 1, 1, 1, 1
+                                        size_hint_y: None
+                                        height: self.texture_size[1]
+                                    BoxLayout:
+                                        orientation: "horizontal"
+                                        size_hint_y: None
+                                        height: dp(40)
+                                        MDBoxLayout:
+                                            orientation: "vertical"
+                                            spacing: dp(2)
+                                            size_hint_x: 0.5
+                                            MDLabel:
+                                                text: "Ккал: 740"
+                                                font_name: "assets/fonts/minecraft.ttf"
+                                                font_size: "10sp"
+                                                halign: "left"
+                                                theme_text_color: "Custom"
+                                                text_color: 1, 1, 1, 1
+                                                size_hint_y: None
+                                                height: self.texture_size[1]
+                                            MDLabel:
+                                                text: "Б: 25 Ж: 26 У: 102"
+                                                font_name: "assets/fonts/minecraft.ttf"
+                                                font_size: "10sp"
+                                                halign: "left"
+                                                theme_text_color: "Custom"
+                                                text_color: 1, 1, 1, 1
+                                                size_hint_y: None
+                                                height: self.texture_size[1]
+                                        BoxLayout:
+                                            orientation: "horizontal"
+                                            size_hint_x: 0.5
+                                            spacing: dp(8)
+                                        AnchorLayout:
+                                            anchor_x: "left"
+                                            anchor_y: "bottom"
+                                            size_hint_x: 0.5
+                                            size_hint_y: 1
+                                            Button:
+                                                size_hint: None, None
+                                                size: dp(60), dp(28)
+                                                background_color: 0, 0, 0, 0
+                                                text: "390"
+                                                font_name: "assets/fonts/minecraft.ttf"
+                                                font_size: "12sp"
+                                                color: 1, 1, 1, 1
+                                                canvas.before:
+                                                    Color:
+                                                        rgba: 0.2, 0.8, 0.4, 1
+                                                    RoundedRectangle:
+                                                        pos: self.pos
+                                                        size: self.size
+                                                        radius: [dp(6), dp(6), dp(6), dp(6)]
+                                        AnchorLayout:
+                                            anchor_x: "right"
+                                            anchor_y: "bottom"
+                                            size_hint_x: 0.5
+                                            size_hint_y: 1
+                                            MDLabel:
+                                                text: "400 мл"
+                                                font_name: "assets/fonts/minecraft.ttf"
+                                                font_size: "10sp"
+                                                halign: "right"
+                                                theme_text_color: "Custom"
+                                                text_color: 1, 1, 1, 1
+                                                size_hint_y: None
+                                                height: self.texture_size[1]
+                                
+                                # Карточка 5: ЭСПРЕССО
+                                BoxLayout:
+                                    size_hint_x: None
+                                    size_hint_y: None
+                                    width: dp(160)
+                                    height: dp(200)
+                                    orientation: "vertical"
+                                    padding: dp(16), dp(16), dp(16), dp(16)
+                                    spacing: dp(8)
+                                    canvas.before:
+                                        Color:
+                                            rgba: 0.353, 0.420, 0.310, 1
+                                        RoundedRectangle:
+                                            pos: self.pos
+                                            size: self.size
+                                            radius: [dp(12), dp(12), dp(12), dp(12)]
+                                    AnchorLayout:
+                                        anchor_x: "center"
+                                        anchor_y: "center"
+                                        size_hint_y: None
+                                        height: dp(80)
+                                    Image:
+                                        source: "assets/drinks/Espresso.png"
+                                        size_hint: None, None
+                                        width: dp(60)
+                                        height: dp(80)
+                                        allow_stretch: True
+                                        keep_ratio: True
+                                    MDLabel:
+                                        text: "ЭСПРЕССО"
+                                        font_name: "assets/fonts/minecraft.ttf"
+                                        font_size: "12sp"
+                                        halign: "center"
+                                        theme_text_color: "Custom"
+                                        text_color: 1, 1, 1, 1
+                                        size_hint_y: None
+                                        height: self.texture_size[1]
+                                    BoxLayout:
+                                        orientation: "horizontal"
+                                        size_hint_y: None
+                                        height: dp(40)
+                                        MDBoxLayout:
+                                            orientation: "vertical"
+                                            spacing: dp(2)
+                                            size_hint_x: 0.5
+                                            MDLabel:
+                                                text: "Ккал: 120"
+                                                font_name: "assets/fonts/minecraft.ttf"
+                                                font_size: "10sp"
+                                                halign: "left"
+                                                theme_text_color: "Custom"
+                                                text_color: 1, 1, 1, 1
+                                                size_hint_y: None
+                                                height: self.texture_size[1]
+                                            MDLabel:
+                                                text: "Б: 3 Ж: 2 У: 18"
+                                                font_name: "assets/fonts/minecraft.ttf"
+                                                font_size: "10sp"
+                                                halign: "left"
+                                                theme_text_color: "Custom"
+                                                text_color: 1, 1, 1, 1
+                                                size_hint_y: None
+                                                height: self.texture_size[1]
+                                        BoxLayout:
+                                            orientation: "horizontal"
+                                            size_hint_x: 0.5
+                                            spacing: dp(8)
+                                        AnchorLayout:
+                                            anchor_x: "left"
+                                            anchor_y: "bottom"
+                                            size_hint_x: 0.5
+                                            size_hint_y: 1
+                                            Button:
+                                                size_hint: None, None
+                                                size: dp(60), dp(28)
+                                                background_color: 0, 0, 0, 0
+                                                text: "150"
+                                                font_name: "assets/fonts/minecraft.ttf"
+                                                font_size: "12sp"
+                                                color: 1, 1, 1, 1
+                                                canvas.before:
+                                                    Color:
+                                                        rgba: 0.2, 0.8, 0.4, 1
+                                                    RoundedRectangle:
+                                                        pos: self.pos
+                                                        size: self.size
+                                                        radius: [dp(6), dp(6), dp(6), dp(6)]
+                                        AnchorLayout:
+                                            anchor_x: "right"
+                                            anchor_y: "bottom"
+                                            size_hint_x: 0.5
+                                            size_hint_y: 1
+                                            MDLabel:
+                                                text: "200 мл"
+                                                font_name: "assets/fonts/minecraft.ttf"
+                                                font_size: "12sp"
+                                                halign: "right"
+                                                theme_text_color: "Custom"
+                                                text_color: 1, 1, 1, 1
+                                                size_hint_y: None
+                                                height: self.texture_size[1]
+                                
+                                # Карточка 6: ЛИМОНАД
+                                BoxLayout:
+                                    size_hint_x: None
+                                    size_hint_y: None
+                                    width: dp(160)
+                                    height: dp(200)
+                                    orientation: "vertical"
+                                    padding: dp(16), dp(16), dp(16), dp(16)
+                                    spacing: dp(8)
+                                    canvas.before:
+                                        Color:
+                                            rgba: 0.353, 0.420, 0.310, 1
+                                        RoundedRectangle:
+                                            pos: self.pos
+                                            size: self.size
+                                            radius: [dp(12), dp(12), dp(12), dp(12)]
+                                    AnchorLayout:
+                                        anchor_x: "center"
+                                        anchor_y: "center"
+                                        size_hint_y: None
+                                        height: dp(80)
+                                    Image:
+                                        source: "assets/drinks/lemonad.png"
+                                        size_hint: None, None
+                                        width: dp(60)
+                                        height: dp(80)
+                                        allow_stretch: True
+                                        keep_ratio: True
+                                    MDLabel:
+                                        text: "ЛИМОНАД"
+                                        font_name: "assets/fonts/minecraft.ttf"
+                                        font_size: "12sp"
+                                        halign: "center"
+                                        theme_text_color: "Custom"
+                                        text_color: 1, 1, 1, 1
+                                        size_hint_y: None
+                                        height: self.texture_size[1]
+                                    BoxLayout:
+                                        orientation: "horizontal"
+                                        size_hint_y: None
+                                        height: dp(40)
+                                        MDBoxLayout:
+                                            orientation: "vertical"
+                                            spacing: dp(2)
+                                            size_hint_x: 0.5
+                                            MDLabel:
+                                                text: "Ккал: 180"
+                                                font_name: "assets/fonts/minecraft.ttf"
+                                                font_size: "10sp"
+                                                halign: "left"
+                                                theme_text_color: "Custom"
+                                                text_color: 1, 1, 1, 1
+                                                size_hint_y: None
+                                                height: self.texture_size[1]
+                                            MDLabel:
+                                                text: "Б: 1 Ж: 0 У: 42"
+                                                font_name: "assets/fonts/minecraft.ttf"
+                                                font_size: "10sp"
+                                                halign: "left"
+                                                theme_text_color: "Custom"
+                                                text_color: 1, 1, 1, 1
+                                                size_hint_y: None
+                                                height: self.texture_size[1]
+                                        BoxLayout:
+                                            orientation: "horizontal"
+                                            size_hint_x: 0.5
+                                            spacing: dp(8)
+                                        AnchorLayout:
+                                            anchor_x: "left"
+                                            anchor_y: "bottom"
+                                            size_hint_x: 0.5
+                                            size_hint_y: 1
+                                            Button:
+                                                size_hint: None, None
+                                                size: dp(60), dp(28)
+                                                background_color: 0, 0, 0, 0
+                                                text: "250"
+                                                font_name: "assets/fonts/minecraft.ttf"
+                                                font_size: "12sp"
+                                                color: 1, 1, 1, 1
+                                                canvas.before:
+                                                    Color:
+                                                        rgba: 0.2, 0.8, 0.4, 1
+                                                    RoundedRectangle:
+                                                        pos: self.pos
+                                                        size: self.size
+                                                        radius: [dp(6), dp(6), dp(6), dp(6)]
+                                        AnchorLayout:
+                                            anchor_x: "right"
+                                            anchor_y: "bottom"
+                                            size_hint_x: 0.5
+                                            size_hint_y: 1
+                                            MDLabel:
+                                                text: "400 мл"
+                                                font_name: "assets/fonts/minecraft.ttf"
+                                                font_size: "10sp"
+                                                halign: "right"
+                                                theme_text_color: "Custom"
+                                                text_color: 1, 1, 1, 1
+                                                size_hint_y: None
+                                                height: self.texture_size[1]
+                                
+                                # Карточка 7: БАБЛ ТИ АССАМ ПОПКОРН
+                                BoxLayout:
+                                    size_hint_x: None
+                                    size_hint_y: None
+                                    width: dp(160)
+                                    height: dp(200)
+                                    orientation: "vertical"
+                                    padding: dp(16), dp(16), dp(16), dp(16)
+                                    spacing: dp(8)
+                                    canvas.before:
+                                        Color:
+                                            rgba: 0.353, 0.420, 0.310, 1
+                                        RoundedRectangle:
+                                            pos: self.pos
+                                            size: self.size
+                                            radius: [dp(12), dp(12), dp(12), dp(12)]
+                                    AnchorLayout:
+                                        anchor_x: "center"
+                                        anchor_y: "center"
+                                        size_hint_y: None
+                                        height: dp(80)
+                                    Image:
+                                        source: "assets/drinks/BubbleTea(Assam-Popcorn).png"
+                                        size_hint: None, None
+                                        width: dp(60)
+                                        height: dp(80)
+                                        allow_stretch: True
+                                        keep_ratio: True
+                                    MDLabel:
+                                        text: "БАБЛ ТИ АССАМ ПОПКОРН"
+                                        font_name: "assets/fonts/minecraft.ttf"
+                                        font_size: "11sp"
+                                        halign: "center"
+                                        theme_text_color: "Custom"
+                                        text_color: 1, 1, 1, 1
+                                        size_hint_y: None
+                                        height: self.texture_size[1]
+                                    BoxLayout:
+                                        orientation: "horizontal"
+                                        size_hint_y: None
+                                        height: dp(40)
+                                        MDBoxLayout:
+                                            orientation: "vertical"
+                                            spacing: dp(2)
+                                            size_hint_x: 0.5
+                                            MDLabel:
+                                                text: "Ккал: 320"
+                                                font_name: "assets/fonts/minecraft.ttf"
+                                                font_size: "10sp"
+                                                halign: "left"
+                                                theme_text_color: "Custom"
+                                                text_color: 1, 1, 1, 1
+                                                size_hint_y: None
+                                                height: self.texture_size[1]
+                                            MDLabel:
+                                                text: "Б: 5 Ж: 8 У: 58"
+                                                font_name: "assets/fonts/minecraft.ttf"
+                                                font_size: "10sp"
+                                                halign: "left"
+                                                theme_text_color: "Custom"
+                                                text_color: 1, 1, 1, 1
+                                                size_hint_y: None
+                                                height: self.texture_size[1]
+                                        BoxLayout:
+                                            orientation: "horizontal"
+                                            size_hint_x: 0.5
+                                            spacing: dp(8)
+                                        AnchorLayout:
+                                            anchor_x: "left"
+                                            anchor_y: "bottom"
+                                            size_hint_x: 0.5
+                                            size_hint_y: 1
+                                            Button:
+                                                size_hint: None, None
+                                                size: dp(60), dp(28)
+                                                background_color: 0, 0, 0, 0
+                                                text: "350"
+                                                font_name: "assets/fonts/minecraft.ttf"
+                                                font_size: "14sp"
+                                                color: 1, 1, 1, 1
+                                                canvas.before:
+                                                    Color:
+                                                        rgba: 0.2, 0.8, 0.4, 1
+                                                    RoundedRectangle:
+                                                        pos: self.pos
+                                                        size: self.size
+                                                        radius: [dp(6), dp(6), dp(6), dp(6)]
+                                        AnchorLayout:
+                                            anchor_x: "right"
+                                            anchor_y: "bottom"
+                                            size_hint_x: 0.5
+                                            size_hint_y: 1
+                                            MDLabel:
+                                                text: "500 мл"
+                                                font_name: "assets/fonts/minecraft.ttf"
+                                                font_size: "12sp"
+                                                halign: "right"
+                                                theme_text_color: "Custom"
+                                                text_color: 1, 1, 1, 1
+                                                size_hint_y: None
+                                                height: self.texture_size[1]
+                                
+                                # Карточка 8: БАБЛ ТИ КАРКАДЕ МАРАКЕШ
+                                BoxLayout:
+                                    size_hint_x: None
+                                    size_hint_y: None
+                                    width: dp(160)
+                                    height: dp(200)
+                                    orientation: "vertical"
+                                    padding: dp(16), dp(16), dp(16), dp(16)
+                                    spacing: dp(8)
+                                    canvas.before:
+                                        Color:
+                                            rgba: 0.353, 0.420, 0.310, 1
+                                        RoundedRectangle:
+                                            pos: self.pos
+                                            size: self.size
+                                            radius: [dp(12), dp(12), dp(12), dp(12)]
+                                    AnchorLayout:
+                                        anchor_x: "center"
+                                        anchor_y: "center"
+                                        size_hint_y: None
+                                        height: dp(80)
+                                    Image:
+                                        source: "assets/drinks/BubbleTea(CarcadeMaraque).png"
+                                        size_hint: None, None
+                                        width: dp(60)
+                                        height: dp(80)
+                                        allow_stretch: True
+                                        keep_ratio: True
+                                    MDLabel:
+                                        text: "БАБЛ ТИ КАРКАДЕ МАРАКЕШ"
+                                        font_name: "assets/fonts/minecraft.ttf"
+                                        font_size: "11sp"
+                                        halign: "center"
+                                        theme_text_color: "Custom"
+                                        text_color: 1, 1, 1, 1
+                                        size_hint_y: None
+                                        height: self.texture_size[1]
+                                    BoxLayout:
+                                        orientation: "horizontal"
+                                        size_hint_y: None
+                                        height: dp(40)
+                                        MDBoxLayout:
+                                            orientation: "vertical"
+                                            spacing: dp(2)
+                                            size_hint_x: 0.5
+                                            MDLabel:
+                                                text: "Ккал: 280"
+                                                font_name: "assets/fonts/minecraft.ttf"
+                                                font_size: "10sp"
+                                                halign: "left"
+                                                theme_text_color: "Custom"
+                                                text_color: 1, 1, 1, 1
+                                                size_hint_y: None
+                                                height: self.texture_size[1]
+                                            MDLabel:
+                                                text: "Б: 4 Ж: 6 У: 52"
+                                                font_name: "assets/fonts/minecraft.ttf"
+                                                font_size: "10sp"
+                                                halign: "left"
+                                                theme_text_color: "Custom"
+                                                text_color: 1, 1, 1, 1
+                                                size_hint_y: None
+                                                height: self.texture_size[1]
+                                        BoxLayout:
+                                            orientation: "horizontal"
+                                            size_hint_x: 0.5
+                                            spacing: dp(8)
+                                        AnchorLayout:
+                                            anchor_x: "left"
+                                            anchor_y: "bottom"
+                                            size_hint_x: 0.5
+                                            size_hint_y: 1
+                                            Button:
+                                                size_hint: None, None
+                                                size: dp(60), dp(28)
+                                                background_color: 0, 0, 0, 0
+                                                text: "350"
+                                                font_name: "assets/fonts/minecraft.ttf"
+                                                font_size: "14sp"
+                                                color: 1, 1, 1, 1
+                                                canvas.before:
+                                                    Color:
+                                                        rgba: 0.2, 0.8, 0.4, 1
+                                                    RoundedRectangle:
+                                                        pos: self.pos
+                                                        size: self.size
+                                                        radius: [dp(6), dp(6), dp(6), dp(6)]
+                                        AnchorLayout:
+                                            anchor_x: "right"
+                                            anchor_y: "bottom"
+                                            size_hint_x: 0.5
+                                            size_hint_y: 1
+                                            MDLabel:
+                                                text: "500 мл"
+                                                font_name: "assets/fonts/minecraft.ttf"
+                                                font_size: "12sp"
+                                                halign: "right"
+                                                theme_text_color: "Custom"
+                                                text_color: 1, 1, 1, 1
+                                                size_hint_y: None
+                                                height: self.texture_size[1]
+                
+
+    # Loyalty Program Info Overlay (информация о программе лояльности)
+    FloatLayout:
+        id: loyalty_program_overlay_root
+        size_hint: None, None
+        size: 0, 0
+        opacity: 0
+        disabled: True
+        Button:
+            background_color: 0, 0, 0, 0.5
+            size_hint: 1, 1
+            disabled: self.parent.disabled
+            on_release: app.close_loyalty_program_overlay()
+        # Панель оверлея, выезжает снизу и занимает 80% высоты
+        BoxLayout:
+            id: loyalty_program_panel
+            orientation: "vertical"
+            size_hint_x: 1
+            size_hint_y: None
+            height: self.parent.height * 0.8 if self.parent else 0
+            y: -self.height
+            MDCard:
+                size_hint: 1, 1
+                radius: [16, 16, 0, 0]
+                md_bg_color: 1, 1, 1, 1
+                elevation: 8
+                padding: 0, 0, 0, 0
+                orientation: "vertical"
+                
+                # Прокручиваемый контент
+                ScrollView:
+                    size_hint_y: 1
+                    do_scroll_x: False
+                    do_scroll_y: True
+                    bar_width: 0
+                    effect_cls: "ScrollEffect"
+                    MDBoxLayout:
+                        orientation: "vertical"
+                        spacing: dp(16)
+                        size_hint_y: None
+                        height: self.minimum_height
+                        padding: dp(24), dp(24), dp(24), dp(24)
+                        
+                        # Заголовок
+                        MDLabel:
+                            text: "ТЕПЕРЬ ALLFRIENDS, ПЕРЕЗАПУСК ПРОГРАММЫ ЛОЯЛЬНОСТИ!"
+                            font_name: "assets/fonts/minecraft.ttf"
+                            font_size: "16sp"
+                            halign: "left"
+                            valign: "middle"
+                            theme_text_color: "Custom"
+                            text_color: 0, 0, 0, 1
+                            size_hint_y: None
+                            height: self.texture_size[1]
+                        
+                        # Вводный текст
+                        MDLabel:
+                            text: "Да-да-да. Мы обновили нашу программу лояльности! Теперь покупать свои любимые напитки ещё выгоднее. Рассказываем, что тебя ждёт:"
+                            font_name: "assets/fonts/minecraft.ttf"
+                            font_size: "14sp"
+                            halign: "left"
+                            valign: "middle"
+                            theme_text_color: "Custom"
+                            text_color: 0, 0, 0, 1
+                            size_hint_y: None
+                            height: self.texture_size[1]
+                        
+                        # Преимущества
+                        MDLabel:
+                            text: "• Накопительный кешбек от 3% до 10% с покупки"
+                            font_name: "assets/fonts/minecraft.ttf"
+                            font_size: "14sp"
+                            halign: "left"
+                            valign: "middle"
+                            theme_text_color: "Custom"
+                            text_color: 0, 0, 0, 1
+                            size_hint_y: None
+                            height: self.texture_size[1]
+                        MDLabel:
+                            text: "• Частичная оплата до 30% прайсами с суммы чека"
+                            font_name: "assets/fonts/minecraft.ttf"
+                            font_size: "14sp"
+                            halign: "left"
+                            valign: "middle"
+                            theme_text_color: "Custom"
+                            text_color: 0, 0, 0, 1
+                            size_hint_y: None
+                            height: self.texture_size[1]
+                        MDLabel:
+                            text: "• 50% кешбек за первую покупку приглашенного друга по программе лояльности"
+                            font_name: "assets/fonts/minecraft.ttf"
+                            font_size: "14sp"
+                            halign: "left"
+                            valign: "middle"
+                            theme_text_color: "Custom"
+                            text_color: 0, 0, 0, 1
+                            size_hint_y: None
+                            height: self.texture_size[1]
+                        MDLabel:
+                            text: "• Подарок на день рождения - 50% кешбек на любую покупку"
+                            font_name: "assets/fonts/minecraft.ttf"
+                            font_size: "14sp"
+                            halign: "left"
+                            valign: "middle"
+                            theme_text_color: "Custom"
+                            text_color: 0, 0, 0, 1
+                            size_hint_y: None
+                            height: self.texture_size[1]
+                        MDLabel:
+                            text: "• Участие в акции \"10-й напиток бесплатно\" и получение бесплатного кофе"
+                            font_name: "assets/fonts/minecraft.ttf"
+                            font_size: "14sp"
+                            halign: "left"
+                            valign: "middle"
+                            theme_text_color: "Custom"
+                            text_color: 0, 0, 0, 1
+                            size_hint_y: None
+                            height: self.texture_size[1]
+                        MDLabel:
+                            text: "• Персональные подарки и участие в секретных акциях через наше мобильное приложение"
+                            font_name: "assets/fonts/minecraft.ttf"
+                            font_size: "14sp"
+                            halign: "left"
+                            valign: "middle"
+                            theme_text_color: "Custom"
+                            text_color: 0, 0, 0, 1
+                            size_hint_y: None
+                            height: self.texture_size[1]
+                        
+                        # Уровни дружбы
+                        MDLabel:
+                            text: "Уровни дружбы:"
+                            font_name: "assets/fonts/minecraft.ttf"
+                            font_size: "16sp"
+                            halign: "left"
+                            valign: "middle"
+                            theme_text_color: "Custom"
+                            text_color: 0, 0, 0, 1
+                            size_hint_y: None
+                            height: self.texture_size[1]
+                        MDLabel:
+                            text: "1 уровень ДРУГ: 3% кешбек при покупках от 0 до 2 000 руб."
+                            font_name: "assets/fonts/minecraft.ttf"
+                            font_size: "14sp"
+                            halign: "left"
+                            valign: "middle"
+                            theme_text_color: "Custom"
+                            text_color: 0, 0, 0, 1
+                            size_hint_y: None
+                            height: self.texture_size[1]
+                        MDLabel:
+                            text: "2 уровень ХОРОШИЙ ДРУГ: 5% кешбек при покупках от 0 до 9 000 руб."
+                            font_name: "assets/fonts/minecraft.ttf"
+                            font_size: "14sp"
+                            halign: "left"
+                            valign: "middle"
+                            theme_text_color: "Custom"
+                            text_color: 0, 0, 0, 1
+                            size_hint_y: None
+                            height: self.texture_size[1]
+                        MDLabel:
+                            text: "3 уровень ЛУЧШИЙ ДРУГ: 7% кешбек при покупках от 0 до 18 000 руб."
+                            font_name: "assets/fonts/minecraft.ttf"
+                            font_size: "14sp"
+                            halign: "left"
+                            valign: "middle"
+                            theme_text_color: "Custom"
+                            text_color: 0, 0, 0, 1
+                            size_hint_y: None
+                            height: self.texture_size[1]
+                        MDLabel:
+                            text: "4 уровень СТАРЫЙ ДРУГ: 10% кешбек при покупках от 0 до 20 000 руб."
+                            font_name: "assets/fonts/minecraft.ttf"
+                            font_size: "14sp"
+                            halign: "left"
+                            valign: "middle"
+                            theme_text_color: "Custom"
+                            text_color: 0, 0, 0, 1
+                            size_hint_y: None
+                            height: self.texture_size[1]
+                        
+                        # Важные правила
+                        MDLabel:
+                            text: "Важно знать:"
+                            font_name: "assets/fonts/minecraft.ttf"
+                            font_size: "16sp"
+                            halign: "left"
+                            valign: "middle"
+                            theme_text_color: "Custom"
+                            text_color: 0, 0, 0, 1
+                            size_hint_y: None
+                            height: self.texture_size[1]
+                        MDLabel:
+                            text: "1. Прайсы можно частично оплачивать покупки на любую сумму, тратя до 30% только по коду в мобильном приложении; в остальных случаях доступна скидка 20% от суммы чека."
+                            font_name: "assets/fonts/minecraft.ttf"
+                            font_size: "14sp"
+                            halign: "left"
+                            valign: "middle"
+                            theme_text_color: "Custom"
+                            text_color: 0, 0, 0, 1
+                            size_hint_y: None
+                            height: self.texture_size[1]
+                        MDLabel:
+                            text: "2. На оставшуюся сумму после траты прайсов новые прайсы не начисляются."
+                            font_name: "assets/fonts/minecraft.ttf"
+                            font_size: "14sp"
+                            halign: "left"
+                            valign: "middle"
+                            theme_text_color: "Custom"
+                            text_color: 0, 0, 0, 1
+                            size_hint_y: None
+                            height: self.texture_size[1]
+                        MDLabel:
+                            text: "3. Кешбек на напитки 600мл не начисляется и не тратится, так как большие напитки участвуют в акции \"10-й напиток бесплатно\"."
+                            font_name: "assets/fonts/minecraft.ttf"
+                            font_size: "14sp"
+                            halign: "left"
+                            valign: "middle"
+                            theme_text_color: "Custom"
+                            text_color: 0, 0, 0, 1
+                            size_hint_y: None
+                            height: self.texture_size[1]
+                        MDLabel:
+                            text: "4. Прайсы и уровень активны 90 дней с последней покупки. Если в течение 90 дней не было покупок, прайсы сгорают, а уровень становится 3%."
+                            font_name: "assets/fonts/minecraft.ttf"
+                            font_size: "14sp"
+                            halign: "left"
+                            valign: "middle"
+                            theme_text_color: "Custom"
+                            text_color: 0, 0, 0, 1
+                            size_hint_y: None
+                            height: self.texture_size[1]
+                        MDLabel:
+                            text: "5. Акции, скидки и кешбек не суммируются друг с другом в одном чеке."
+                            font_name: "assets/fonts/minecraft.ttf"
+                            font_size: "14sp"
+                            halign: "left"
+                            valign: "middle"
+                            theme_text_color: "Custom"
+                            text_color: 0, 0, 0, 1
+                            size_hint_y: None
+                            height: self.texture_size[1]
+                
+
+    # Referral Overlay (пригласить друга)
+    FloatLayout:
+        id: referral_overlay_root
+        size_hint: None, None
+        size: 0, 0
+        opacity: 0
+        disabled: True
+        Button:
+            background_color: 0, 0, 0, 0.5
+            size_hint: 1, 1
+            disabled: self.parent.disabled
+            on_release: app.close_referral_overlay()
+        # Панель оверлея, выезжает снизу и занимает 80% высоты
+        BoxLayout:
+            id: referral_panel
+            orientation: "vertical"
+            size_hint_x: 1
+            size_hint_y: None
+            height: self.parent.height * 0.8 if self.parent else 0
+            y: -self.height
+            MDCard:
+                size_hint: 1, 1
+                radius: [16, 16, 0, 0]
+                md_bg_color: 1, 1, 1, 1
+                elevation: 8
+                padding: 0, 0, 0, 0
+                orientation: "vertical"
+                
+                # Прокручиваемый контент
+                ScrollView:
+                    size_hint_y: 1
+                    do_scroll_x: False
+                    do_scroll_y: True
+                    bar_width: 0
+                    effect_cls: "ScrollEffect"
+                    MDBoxLayout:
+                        orientation: "vertical"
+                        spacing: dp(16)
+                        size_hint_y: None
+                        height: self.minimum_height
+                        padding: dp(24), dp(24), dp(24), dp(24)
+                        
+                        # Заголовок
+                        MDLabel:
+                            text: "ДАРИМ ИЗУМРУДЫ ЗА КАЖДОГО НОВОГО ДРУГА!"
+                            font_name: "assets/fonts/minecraft.ttf"
+                            font_size: "16sp"
+                            halign: "left"
+                            valign: "middle"
+                            theme_text_color: "Custom"
+                            text_color: 0, 0, 0, 1
+                            size_hint_y: None
+                            height: self.texture_size[1]
+                        
+                        # Вводный текст
+                        MDLabel:
+                            text: "У тебя есть друзья, которые ещё не пробовали вкусный кофе? Зови их к нам, а мы тебе за это начислим изумруды!"
+                            font_name: "assets/fonts/minecraft.ttf"
+                            font_size: "14sp"
+                            halign: "left"
+                            valign: "middle"
+                            theme_text_color: "Custom"
+                            text_color: 0, 0, 0, 1
+                            size_hint_y: None
+                            height: self.texture_size[1]
+                        MDLabel:
+                            text: "Дарим тебе кешбк 50% за первую покупку каждого нового друга, который регистрируется в нашем мобильном приложении."
+                            font_name: "assets/fonts/minecraft.ttf"
+                            font_size: "14sp"
+                            halign: "left"
+                            valign: "middle"
+                            theme_text_color: "Custom"
+                            text_color: 0, 0, 0, 1
+                            size_hint_y: None
+                            height: self.texture_size[1]
+                        
+                        # Как получить подарок
+                        MDLabel:
+                            text: "Как получить подарок?"
+                            font_name: "assets/fonts/minecraft.ttf"
+                            font_size: "16sp"
+                            halign: "left"
+                            valign: "middle"
+                            theme_text_color: "Custom"
+                            text_color: 0, 0, 0, 1
+                            size_hint_y: None
+                            height: self.texture_size[1]
+                        MDLabel:
+                            text: "Приглашенному другу нужно:"
+                            font_name: "assets/fonts/minecraft.ttf"
+                            font_size: "14sp"
+                            halign: "left"
+                            valign: "middle"
+                            theme_text_color: "Custom"
+                            text_color: 0, 0, 0, 1
+                            size_hint_y: None
+                            height: self.texture_size[1]
+                        MDLabel:
+                            text: "1. при регистрации в приложении указать промокод пригласившего;"
+                            font_name: "assets/fonts/minecraft.ttf"
+                            font_size: "14sp"
+                            halign: "left"
+                            valign: "middle"
+                            theme_text_color: "Custom"
+                            text_color: 0, 0, 0, 1
+                            size_hint_y: None
+                            height: self.texture_size[1]
+                        MDLabel:
+                            text: "2. совершить первую покупку на любую СУММУ в кофейне в течение 14 дней;"
+                            font_name: "assets/fonts/minecraft.ttf"
+                            font_size: "14sp"
+                            halign: "left"
+                            valign: "middle"
+                            theme_text_color: "Custom"
+                            text_color: 0, 0, 0, 1
+                            size_hint_y: None
+                            height: self.texture_size[1]
+                        MDLabel:
+                            text: "3. Всё! Ты получишь 50% кешбк с покупки друга."
+                            font_name: "assets/fonts/minecraft.ttf"
+                            font_size: "14sp"
+                            halign: "left"
+                            valign: "middle"
+                            theme_text_color: "Custom"
+                            text_color: 0, 0, 0, 1
+                            size_hint_y: None
+                            height: self.texture_size[1]
+                        
+                        # Важно знать
+                        MDLabel:
+                            text: "Больше друзей – больше прайсов!"
+                            font_name: "assets/fonts/minecraft.ttf"
+                            font_size: "16sp"
+                            halign: "left"
+                            valign: "middle"
+                            theme_text_color: "Custom"
+                            text_color: 0, 0, 0, 1
+                            size_hint_y: None
+                            height: self.texture_size[1]
+                        MDLabel:
+                            text: "Тебе это важно знать!"
+                            font_name: "assets/fonts/minecraft.ttf"
+                            font_size: "14sp"
+                            halign: "left"
+                            valign: "middle"
+                            theme_text_color: "Custom"
+                            text_color: 0, 0, 0, 1
+                            size_hint_y: None
+                            height: self.texture_size[1]
+                        MDLabel:
+                            text: "• приглашенному другу в течение 14 дней надо совершить покупку после регистрации в приложении;"
+                            font_name: "assets/fonts/minecraft.ttf"
+                            font_size: "14sp"
+                            halign: "left"
+                            valign: "middle"
+                            theme_text_color: "Custom"
+                            text_color: 0, 0, 0, 1
+                            size_hint_y: None
+                            height: self.texture_size[1]
+                        MDLabel:
+                            text: "• подарочный кешбек активен в течение 30 дней после начисления;"
+                            font_name: "assets/fonts/minecraft.ttf"
+                            font_size: "14sp"
+                            halign: "left"
+                            valign: "middle"
+                            theme_text_color: "Custom"
+                            text_color: 0, 0, 0, 1
+                            size_hint_y: None
+                            height: self.texture_size[1]
+                        MDLabel:
+                            text: "• подарочный кешбек начисляется только с суммы, которая была оплачена деньгами"
+                            font_name: "assets/fonts/minecraft.ttf"
+                            font_size: "14sp"
+                            halign: "left"
+                            valign: "middle"
+                            theme_text_color: "Custom"
+                            text_color: 0, 0, 0, 1
+                            size_hint_y: None
+                            height: self.texture_size[1]
+                        MDLabel:
+                            text: "• кешбек не начисляется на кофе в зернах (Спакет);"
+                            font_name: "assets/fonts/minecraft.ttf"
+                            font_size: "14sp"
+                            halign: "left"
+                            valign: "middle"
+                            theme_text_color: "Custom"
+                            text_color: 0, 0, 0, 1
+                            size_hint_y: None
+                            height: self.texture_size[1]
+                        MDLabel:
+                            text: "• подарочный кешбек с другими акциями не суммируется."
+                            font_name: "assets/fonts/minecraft.ttf"
+                            font_size: "14sp"
+                            halign: "left"
+                            valign: "middle"
+                            theme_text_color: "Custom"
+                            text_color: 0, 0, 0, 1
+                            size_hint_y: None
+                            height: self.texture_size[1]
+                
+                # Кнопка закрыть (зеленая, внизу)
+                BoxLayout:
+                    size_hint_y: None
+                    height: dp(56) + dp(32)
+                    padding: dp(16), dp(16), dp(16), dp(16)
+                    Button:
+                        size_hint: 1, 1
+                        background_color: 0, 0, 0, 0
+                        on_release: 
+                            app.close_referral_overlay()
+                            app.open_screen_by_name('referral')
+                        text: "Пригласить Друга"
+                        font_name: "assets/fonts/minecraft.ttf"
+                        font_size: "16sp"
+                        color: 1, 1, 1, 1
+                        canvas.before:
+                            Color:
+                                rgba: 0.2, 0.8, 0.4, 1
+                            RoundedRectangle:
+                                pos: self.pos
+                                size: self.size
+                                radius: [dp(12), dp(12), dp(12), dp(12)]
+
+    # Drinks Menu Overlay (меню напитков BY ALUCARD)
+    FloatLayout:
+        id: drinks_menu_overlay_root
+        size_hint: None, None
+        size: 0, 0
+        opacity: 0
+        disabled: True
+        Button:
+            background_color: 0, 0, 0, 0.5
+            size_hint: 1, 1
+            disabled: self.parent.disabled
+            on_release: app.close_drinks_menu_overlay()
+        # Панель оверлея, выезжает снизу и занимает 80% высоты
+        BoxLayout:
+            id: drinks_menu_panel
+            orientation: "vertical"
+            size_hint_x: 1
+            size_hint_y: None
+            height: self.parent.height * 0.8 if self.parent else 0
+            y: -self.height
+            MDCard:
+                size_hint: 1, 1
+                radius: [16, 16, 0, 0]
+                md_bg_color: 1, 1, 1, 1
+                elevation: 8
+                padding: 0, 0, 0, 0
+                orientation: "vertical"
+                
+                # Прокручиваемый контент
+                ScrollView:
+                    size_hint_y: 1
+                    do_scroll_x: False
+                    do_scroll_y: True
+                    bar_width: 0
+                    effect_cls: "ScrollEffect"
+                    MDBoxLayout:
+                        orientation: "vertical"
+                        spacing: dp(16)
+                        size_hint_y: None
+                        height: self.minimum_height
+                        padding: dp(24), dp(24), dp(24), dp(24)
+                        
+                        # Заголовок
+                        MDLabel:
+                            text: "BY ALUCARD"
+                            font_name: "assets/fonts/minecraft.ttf"
+                            font_size: "18sp"
+                            halign: "left"
+                            valign: "middle"
+                            theme_text_color: "Custom"
+                            text_color: 0, 0, 0, 1
+                            size_hint_y: None
+                            height: self.texture_size[1]
+                        
+                        # Сетка карточек напитков 2 колонки
+                        BoxLayout:
+                            orientation: "horizontal"
+                            size_hint_x: 1
+                            size_hint_y: None
+                            height: self.minimum_height
+                            Widget:
+                                size_hint_x: None
+                                width: 0
+                            GridLayout:
+                                id: grid_layout
+                                cols: 2
+                                spacing: dp(12)
+                                size_hint_x: None
+                                size_hint_y: None
+                                width: self.minimum_width
+                                height: self.minimum_height
+                                
+                                # Карточка 1: РАФ НОРВЕГИЯ
+                                BoxLayout:
+                                    size_hint_x: None
+                                    size_hint_y: None
+                                    width: dp(160)
+                                    height: dp(200)
+                                    orientation: "vertical"
+                                    padding: dp(16), dp(16), dp(16), dp(16)
+                                    spacing: dp(8)
+                                    canvas.before:
+                                        Color:
+                                            rgba: 0.353, 0.420, 0.310, 1
+                                        RoundedRectangle:
+                                            pos: self.pos
+                                            size: self.size
+                                            radius: [dp(12), dp(12), dp(12), dp(12)]
+                                    AnchorLayout:
+                                        anchor_x: "center"
+                                        anchor_y: "center"
+                                        size_hint_y: None
+                                        height: dp(80)
+                                        Image:
+                                            source: "assets/drinks/Raf(cream-brule).png"
+                                            size_hint: None, None
+                                            width: dp(60)
+                                            height: dp(80)
+                                            allow_stretch: True
+                                            keep_ratio: True
+                                    MDLabel:
+                                        text: "РАФ НОРВЕГИЯ"
+                                        font_name: "assets/fonts/minecraft.ttf"
+                                        font_size: "12sp"
+                                        halign: "center"
+                                        theme_text_color: "Custom"
+                                        text_color: 1, 1, 1, 1
+                                        size_hint_y: None
+                                        height: self.texture_size[1]
+                                    BoxLayout:
+                                        orientation: "horizontal"
+                                        size_hint_y: None
+                                        height: dp(40)
+                                        MDBoxLayout:
+                                            orientation: "vertical"
+                                            spacing: dp(2)
+                                            size_hint_x: 0.5
+                                            MDLabel:
+                                                text: "Ккал: 280"
+                                                font_name: "assets/fonts/minecraft.ttf"
+                                                font_size: "10sp"
+                                                halign: "left"
+                                                theme_text_color: "Custom"
+                                                text_color: 1, 1, 1, 1
+                                                size_hint_y: None
+                                                height: self.texture_size[1]
+                                            MDLabel:
+                                                text: "Б: 12 Ж: 10 У: 42"
+                                                font_name: "assets/fonts/minecraft.ttf"
+                                                font_size: "10sp"
+                                                halign: "left"
+                                                theme_text_color: "Custom"
+                                                text_color: 1, 1, 1, 1
+                                                size_hint_y: None
+                                                height: self.texture_size[1]
+                                        BoxLayout:
+                                            orientation: "horizontal"
+                                            size_hint_x: 0.5
+                                            spacing: dp(8)
+                                            AnchorLayout:
+                                                anchor_x: "left"
+                                                anchor_y: "bottom"
+                                                size_hint_x: 0.5
+                                                size_hint_y: 1
+                                                Button:
+                                                    size_hint: None, None
+                                                    size: dp(60), dp(28)
+                                                    background_color: 0, 0, 0, 0
+                                                    text: "290"
+                                                    font_name: "assets/fonts/minecraft.ttf"
+                                                    font_size: "12sp"
+                                                    color: 1, 1, 1, 1
+                                                    canvas.before:
+                                                        Color:
+                                                            rgba: 0.2, 0.8, 0.4, 1
+                                                        RoundedRectangle:
+                                                            pos: self.pos
+                                                            size: self.size
+                                                            radius: [dp(6), dp(6), dp(6), dp(6)]
+                                            AnchorLayout:
+                                                anchor_x: "right"
+                                                anchor_y: "bottom"
+                                                size_hint_x: 0.5
+                                                size_hint_y: 1
+                                                MDLabel:
+                                                    text: "400 мл"
+                                                    font_name: "assets/fonts/minecraft.ttf"
+                                                    font_size: "10sp"
+                                                    halign: "right"
+                                                    theme_text_color: "Custom"
+                                                    text_color: 1, 1, 1, 1
+                                                    size_hint_y: None
+                                                    height: self.texture_size[1]
+                                
+                                # Карточка 2: РАФ КРЕМ БРЮЛЕ
+                                BoxLayout:
+                                    size_hint_x: None
+                                    size_hint_y: None
+                                    width: dp(160)
+                                    height: dp(200)
+                                    orientation: "vertical"
+                                    padding: dp(16), dp(16), dp(16), dp(16)
+                                    spacing: dp(8)
+                                    canvas.before:
+                                        Color:
+                                            rgba: 0.353, 0.420, 0.310, 1
+                                        RoundedRectangle:
+                                            pos: self.pos
+                                            size: self.size
+                                            radius: [dp(12), dp(12), dp(12), dp(12)]
+                                    AnchorLayout:
+                                        anchor_x: "center"
+                                        anchor_y: "center"
+                                        size_hint_y: None
+                                        height: dp(80)
+                                        Image:
+                                            source: "assets/drinks/Raf(cream-brule)-1.png"
+                                            size_hint: None, None
+                                            width: dp(60)
+                                            height: dp(80)
+                                            allow_stretch: True
+                                            keep_ratio: True
+                                    MDLabel:
+                                        text: "РАФ КРЕМ БРЮЛЕ"
+                                        font_name: "assets/fonts/minecraft.ttf"
+                                        font_size: "12sp"
+                                        halign: "center"
+                                        theme_text_color: "Custom"
+                                        text_color: 1, 1, 1, 1
+                                        size_hint_y: None
+                                        height: self.texture_size[1]
+                                    BoxLayout:
+                                        orientation: "horizontal"
+                                        size_hint_y: None
+                                        height: dp(40)
+                                        MDBoxLayout:
+                                            orientation: "vertical"
+                                            spacing: dp(2)
+                                            size_hint_x: 0.5
+                                            MDLabel:
+                                                text: "Ккал: 280"
+                                                font_name: "assets/fonts/minecraft.ttf"
+                                                font_size: "10sp"
+                                                halign: "left"
+                                                theme_text_color: "Custom"
+                                                text_color: 1, 1, 1, 1
+                                                size_hint_y: None
+                                                height: self.texture_size[1]
+                                            MDLabel:
+                                                text: "Б: 10 Ж: 11 У: 35"
+                                                font_name: "assets/fonts/minecraft.ttf"
+                                                font_size: "10sp"
+                                                halign: "left"
+                                                theme_text_color: "Custom"
+                                                text_color: 1, 1, 1, 1
+                                                size_hint_y: None
+                                                height: self.texture_size[1]
+                                        BoxLayout:
+                                            orientation: "horizontal"
+                                            size_hint_x: 0.5
+                                            spacing: dp(8)
+                                            AnchorLayout:
+                                                anchor_x: "left"
+                                                anchor_y: "bottom"
+                                                size_hint_x: 0.5
+                                                size_hint_y: 1
+                                                Button:
+                                                    size_hint: None, None
+                                                    size: dp(60), dp(28)
+                                                    background_color: 0, 0, 0, 0
+                                                    text: "290"
+                                                    font_name: "assets/fonts/minecraft.ttf"
+                                                    font_size: "12sp"
+                                                    color: 1, 1, 1, 1
+                                                    canvas.before:
+                                                        Color:
+                                                            rgba: 0.2, 0.8, 0.4, 1
+                                                        RoundedRectangle:
+                                                            pos: self.pos
+                                                            size: self.size
+                                                            radius: [dp(6), dp(6), dp(6), dp(6)]
+                                            AnchorLayout:
+                                                anchor_x: "right"
+                                                anchor_y: "bottom"
+                                                size_hint_x: 0.5
+                                                size_hint_y: 1
+                                                MDLabel:
+                                                    text: "400 мл"
+                                                    font_name: "assets/fonts/minecraft.ttf"
+                                                    font_size: "10sp"
+                                                    halign: "right"
+                                                    theme_text_color: "Custom"
+                                                    text_color: 1, 1, 1, 1
+                                                    size_hint_y: None
+                                                    height: self.texture_size[1]
+                                
+                                # Карточка 3: ШОКОЛАТТЕ БАНАНОВЫЙ БРАУНИ
+                                BoxLayout:
+                                    size_hint_x: None
+                                    size_hint_y: None
+                                    width: dp(160)
+                                    height: dp(200)
+                                    orientation: "vertical"
+                                    padding: dp(16), dp(16), dp(16), dp(16)
+                                    spacing: dp(8)
+                                    canvas.before:
+                                        Color:
+                                            rgba: 0.353, 0.420, 0.310, 1
+                                        RoundedRectangle:
+                                            pos: self.pos
+                                            size: self.size
+                                            radius: [dp(12), dp(12), dp(12), dp(12)]
+                                    AnchorLayout:
+                                        anchor_x: "center"
+                                        anchor_y: "center"
+                                        size_hint_y: None
+                                        height: dp(80)
+                                        Image:
+                                            source: "assets/drinks/ChocolatteBananaBrouni.png"
+                                            size_hint: None, None
+                                            width: dp(60)
+                                            height: dp(80)
+                                            allow_stretch: True
+                                            keep_ratio: True
+                                    MDLabel:
+                                        text: "ШОКОЛАТТЕ БАНАНОВЫЙ БРАУНИ"
+                                        font_name: "assets/fonts/minecraft.ttf"
+                                        font_size: "11sp"
+                                        halign: "center"
+                                        theme_text_color: "Custom"
+                                        text_color: 1, 1, 1, 1
+                                        size_hint_y: None
+                                        height: self.texture_size[1]
+                                    BoxLayout:
+                                        orientation: "horizontal"
+                                        size_hint_y: None
+                                        height: dp(40)
+                                        MDBoxLayout:
+                                            orientation: "vertical"
+                                            spacing: dp(2)
+                                            size_hint_x: 0.5
+                                            MDLabel:
+                                                text: "Ккал: 820"
+                                                font_name: "assets/fonts/minecraft.ttf"
+                                                font_size: "10sp"
+                                                halign: "left"
+                                                theme_text_color: "Custom"
+                                                text_color: 1, 1, 1, 1
+                                                size_hint_y: None
+                                                height: self.texture_size[1]
+                                            MDLabel:
+                                                text: "Б: 24 Ж: 30 У: 114"
+                                                font_name: "assets/fonts/minecraft.ttf"
+                                                font_size: "10sp"
+                                                halign: "left"
+                                                theme_text_color: "Custom"
+                                                text_color: 1, 1, 1, 1
+                                                size_hint_y: None
+                                                height: self.texture_size[1]
+                                        BoxLayout:
+                                            orientation: "horizontal"
+                                            size_hint_x: 0.5
+                                            spacing: dp(8)
+                                            AnchorLayout:
+                                                anchor_x: "left"
+                                                anchor_y: "bottom"
+                                                size_hint_x: 0.5
+                                                size_hint_y: 1
+                                                Button:
+                                                    size_hint: None, None
+                                                    size: dp(60), dp(28)
+                                                    background_color: 0, 0, 0, 0
+                                                    text: "390"
+                                                    font_name: "assets/fonts/minecraft.ttf"
+                                                    font_size: "12sp"
+                                                    color: 1, 1, 1, 1
+                                                    canvas.before:
+                                                        Color:
+                                                            rgba: 0.2, 0.8, 0.4, 1
+                                                        RoundedRectangle:
+                                                            pos: self.pos
+                                                            size: self.size
+                                                            radius: [dp(6), dp(6), dp(6), dp(6)]
+                                            AnchorLayout:
+                                                anchor_x: "right"
+                                                anchor_y: "bottom"
+                                                size_hint_x: 0.5
+                                                size_hint_y: 1
+                                                MDLabel:
+                                                    text: "400 мл"
+                                                    font_name: "assets/fonts/minecraft.ttf"
+                                                    font_size: "10sp"
+                                                    halign: "right"
+                                                    theme_text_color: "Custom"
+                                                    text_color: 1, 1, 1, 1
+                                                    size_hint_y: None
+                                                    height: self.texture_size[1]
+                                
+                                # Карточка 4: ЛАТТЕ ВИШНЕВЫЙ КОМПОТИК
+                                BoxLayout:
+                                    size_hint_x: None
+                                    size_hint_y: None
+                                    width: dp(160)
+                                    height: dp(200)
+                                    orientation: "vertical"
+                                    padding: dp(16), dp(16), dp(16), dp(16)
+                                    spacing: dp(8)
+                                    canvas.before:
+                                        Color:
+                                            rgba: 0.353, 0.420, 0.310, 1
+                                        RoundedRectangle:
+                                            pos: self.pos
+                                            size: self.size
+                                            radius: [dp(12), dp(12), dp(12), dp(12)]
+                                    AnchorLayout:
+                                        anchor_x: "center"
+                                        anchor_y: "center"
+                                        size_hint_y: None
+                                        height: dp(80)
+                                        Image:
+                                            source: "assets/drinks/latte(compotik).png"
+                                            size_hint: None, None
+                                            width: dp(60)
+                                            height: dp(80)
+                                            allow_stretch: True
+                                            keep_ratio: True
+                                    MDLabel:
+                                        text: "ЛАТТЕ ВИШНЕВЫЙ КОМПОТИК"
+                                        font_name: "assets/fonts/minecraft.ttf"
+                                        font_size: "11sp"
+                                        halign: "center"
+                                        theme_text_color: "Custom"
+                                        text_color: 1, 1, 1, 1
+                                        size_hint_y: None
+                                        height: self.texture_size[1]
+                                    BoxLayout:
+                                        orientation: "horizontal"
+                                        size_hint_y: None
+                                        height: dp(40)
+                                        MDBoxLayout:
+                                            orientation: "vertical"
+                                            spacing: dp(2)
+                                            size_hint_x: 0.5
+                                            MDLabel:
+                                                text: "Ккал: 740"
+                                                font_name: "assets/fonts/minecraft.ttf"
+                                                font_size: "10sp"
+                                                halign: "left"
+                                                theme_text_color: "Custom"
+                                                text_color: 1, 1, 1, 1
+                                                size_hint_y: None
+                                                height: self.texture_size[1]
+                                            MDLabel:
+                                                text: "Б: 25 Ж: 26 У: 102"
+                                                font_name: "assets/fonts/minecraft.ttf"
+                                                font_size: "10sp"
+                                                halign: "left"
+                                                theme_text_color: "Custom"
+                                                text_color: 1, 1, 1, 1
+                                                size_hint_y: None
+                                                height: self.texture_size[1]
+                                        BoxLayout:
+                                            orientation: "horizontal"
+                                            size_hint_x: 0.5
+                                            spacing: dp(8)
+                                            AnchorLayout:
+                                                anchor_x: "left"
+                                                anchor_y: "bottom"
+                                                size_hint_x: 0.5
+                                                size_hint_y: 1
+                                                Button:
+                                                    size_hint: None, None
+                                                    size: dp(60), dp(28)
+                                                    background_color: 0, 0, 0, 0
+                                                    text: "390"
+                                                    font_name: "assets/fonts/minecraft.ttf"
+                                                    font_size: "12sp"
+                                                    color: 1, 1, 1, 1
+                                                    canvas.before:
+                                                        Color:
+                                                            rgba: 0.2, 0.8, 0.4, 1
+                                                        RoundedRectangle:
+                                                            pos: self.pos
+                                                            size: self.size
+                                                            radius: [dp(6), dp(6), dp(6), dp(6)]
+                                            AnchorLayout:
+                                                anchor_x: "right"
+                                                anchor_y: "bottom"
+                                                size_hint_x: 0.5
+                                                size_hint_y: 1
+                                                MDLabel:
+                                                    text: "400 мл"
+                                                    font_name: "assets/fonts/minecraft.ttf"
+                                                    font_size: "10sp"
+                                                    halign: "right"
+                                                    theme_text_color: "Custom"
+                                                    text_color: 1, 1, 1, 1
+                                                    size_hint_y: None
+                                                    height: self.texture_size[1]
+                                
+                                # Карточка 5: ЭСПРЕССО
+                                BoxLayout:
+                                    size_hint_x: None
+                                    size_hint_y: None
+                                    width: dp(160)
+                                    height: dp(200)
+                                    orientation: "vertical"
+                                    padding: dp(16), dp(16), dp(16), dp(16)
+                                    spacing: dp(8)
+                                    canvas.before:
+                                        Color:
+                                            rgba: 0.353, 0.420, 0.310, 1
+                                        RoundedRectangle:
+                                            pos: self.pos
+                                            size: self.size
+                                            radius: [dp(12), dp(12), dp(12), dp(12)]
+                                    AnchorLayout:
+                                        anchor_x: "center"
+                                        anchor_y: "center"
+                                        size_hint_y: None
+                                        height: dp(80)
+                                        Image:
+                                            source: "assets/drinks/Espresso.png"
+                                            size_hint: None, None
+                                            width: dp(60)
+                                            height: dp(80)
+                                            allow_stretch: True
+                                            keep_ratio: True
+                                    MDLabel:
+                                        text: "ЭСПРЕССО"
+                                        font_name: "assets/fonts/minecraft.ttf"
+                                        font_size: "12sp"
+                                        halign: "center"
+                                        theme_text_color: "Custom"
+                                        text_color: 1, 1, 1, 1
+                                        size_hint_y: None
+                                        height: self.texture_size[1]
+                                    BoxLayout:
+                                        orientation: "horizontal"
+                                        size_hint_y: None
+                                        height: dp(40)
+                                        MDBoxLayout:
+                                            orientation: "vertical"
+                                            spacing: dp(2)
+                                            size_hint_x: 0.5
+                                            MDLabel:
+                                                text: "Ккал: 120"
+                                                font_name: "assets/fonts/minecraft.ttf"
+                                                font_size: "10sp"
+                                                halign: "left"
+                                                theme_text_color: "Custom"
+                                                text_color: 1, 1, 1, 1
+                                                size_hint_y: None
+                                                height: self.texture_size[1]
+                                            MDLabel:
+                                                text: "Б: 3 Ж: 2 У: 18"
+                                                font_name: "assets/fonts/minecraft.ttf"
+                                                font_size: "10sp"
+                                                halign: "left"
+                                                theme_text_color: "Custom"
+                                                text_color: 1, 1, 1, 1
+                                                size_hint_y: None
+                                                height: self.texture_size[1]
+                                        BoxLayout:
+                                            orientation: "horizontal"
+                                            size_hint_x: 0.5
+                                            spacing: dp(8)
+                                            AnchorLayout:
+                                                anchor_x: "left"
+                                                anchor_y: "bottom"
+                                                size_hint_x: 0.5
+                                                size_hint_y: 1
+                                                Button:
+                                                    size_hint: None, None
+                                                    size: dp(60), dp(28)
+                                                    background_color: 0, 0, 0, 0
+                                                    text: "150"
+                                                    font_name: "assets/fonts/minecraft.ttf"
+                                                    font_size: "12sp"
+                                                    color: 1, 1, 1, 1
+                                                    canvas.before:
+                                                        Color:
+                                                            rgba: 0.2, 0.8, 0.4, 1
+                                                        RoundedRectangle:
+                                                            pos: self.pos
+                                                            size: self.size
+                                                            radius: [dp(6), dp(6), dp(6), dp(6)]
+                                            AnchorLayout:
+                                                anchor_x: "right"
+                                                anchor_y: "bottom"
+                                                size_hint_x: 0.5
+                                                size_hint_y: 1
+                                                MDLabel:
+                                                    text: "200 мл"
+                                                    font_name: "assets/fonts/minecraft.ttf"
+                                                    font_size: "12sp"
+                                                    halign: "right"
+                                                    theme_text_color: "Custom"
+                                                    text_color: 1, 1, 1, 1
+                                                    size_hint_y: None
+                                                    height: self.texture_size[1]
+                                
+                                # Карточка 6: ЛИМОНАД
+                                BoxLayout:
+                                    size_hint_x: None
+                                    size_hint_y: None
+                                    width: dp(160)
+                                    height: dp(200)
+                                    orientation: "vertical"
+                                    padding: dp(16), dp(16), dp(16), dp(16)
+                                    spacing: dp(8)
+                                    canvas.before:
+                                        Color:
+                                            rgba: 0.353, 0.420, 0.310, 1
+                                        RoundedRectangle:
+                                            pos: self.pos
+                                            size: self.size
+                                            radius: [dp(12), dp(12), dp(12), dp(12)]
+                                    AnchorLayout:
+                                        anchor_x: "center"
+                                        anchor_y: "center"
+                                        size_hint_y: None
+                                        height: dp(80)
+                                        Image:
+                                            source: "assets/drinks/lemonad.png"
+                                            size_hint: None, None
+                                            width: dp(60)
+                                            height: dp(80)
+                                            allow_stretch: True
+                                            keep_ratio: True
+                                    MDLabel:
+                                        text: "ЛИМОНАД"
+                                        font_name: "assets/fonts/minecraft.ttf"
+                                        font_size: "12sp"
+                                        halign: "center"
+                                        theme_text_color: "Custom"
+                                        text_color: 1, 1, 1, 1
+                                        size_hint_y: None
+                                        height: self.texture_size[1]
+                                    BoxLayout:
+                                        orientation: "horizontal"
+                                        size_hint_y: None
+                                        height: dp(40)
+                                        MDBoxLayout:
+                                            orientation: "vertical"
+                                            spacing: dp(2)
+                                            size_hint_x: 0.5
+                                            MDLabel:
+                                                text: "Ккал: 180"
+                                                font_name: "assets/fonts/minecraft.ttf"
+                                                font_size: "10sp"
+                                                halign: "left"
+                                                theme_text_color: "Custom"
+                                                text_color: 1, 1, 1, 1
+                                                size_hint_y: None
+                                                height: self.texture_size[1]
+                                            MDLabel:
+                                                text: "Б: 1 Ж: 0 У: 42"
+                                                font_name: "assets/fonts/minecraft.ttf"
+                                                font_size: "10sp"
+                                                halign: "left"
+                                                theme_text_color: "Custom"
+                                                text_color: 1, 1, 1, 1
+                                                size_hint_y: None
+                                                height: self.texture_size[1]
+                                        BoxLayout:
+                                            orientation: "horizontal"
+                                            size_hint_x: 0.5
+                                            spacing: dp(8)
+                                            AnchorLayout:
+                                                anchor_x: "left"
+                                                anchor_y: "bottom"
+                                                size_hint_x: 0.5
+                                                size_hint_y: 1
+                                                Button:
+                                                    size_hint: None, None
+                                                    size: dp(60), dp(28)
+                                                    background_color: 0, 0, 0, 0
+                                                    text: "250"
+                                                    font_name: "assets/fonts/minecraft.ttf"
+                                                    font_size: "12sp"
+                                                    color: 1, 1, 1, 1
+                                                    canvas.before:
+                                                        Color:
+                                                            rgba: 0.2, 0.8, 0.4, 1
+                                                        RoundedRectangle:
+                                                            pos: self.pos
+                                                            size: self.size
+                                                            radius: [dp(6), dp(6), dp(6), dp(6)]
+                                            AnchorLayout:
+                                                anchor_x: "right"
+                                                anchor_y: "bottom"
+                                                size_hint_x: 0.5
+                                                size_hint_y: 1
+                                                MDLabel:
+                                                    text: "400 мл"
+                                                    font_name: "assets/fonts/minecraft.ttf"
+                                                    font_size: "10sp"
+                                                    halign: "right"
+                                                    theme_text_color: "Custom"
+                                                    text_color: 1, 1, 1, 1
+                                                    size_hint_y: None
+                                                    height: self.texture_size[1]
+                                
+                                # Карточка 7: БАБЛ ТИ АССАМ ПОПКОРН
+                                BoxLayout:
+                                    size_hint_x: None
+                                    size_hint_y: None
+                                    width: dp(160)
+                                    height: dp(200)
+                                    orientation: "vertical"
+                                    padding: dp(16), dp(16), dp(16), dp(16)
+                                    spacing: dp(8)
+                                    canvas.before:
+                                        Color:
+                                            rgba: 0.353, 0.420, 0.310, 1
+                                        RoundedRectangle:
+                                            pos: self.pos
+                                            size: self.size
+                                            radius: [dp(12), dp(12), dp(12), dp(12)]
+                                    AnchorLayout:
+                                        anchor_x: "center"
+                                        anchor_y: "center"
+                                        size_hint_y: None
+                                        height: dp(80)
+                                        Image:
+                                            source: "assets/drinks/BubbleTea(Assam-Popcorn).png"
+                                            size_hint: None, None
+                                            width: dp(60)
+                                            height: dp(80)
+                                            allow_stretch: True
+                                            keep_ratio: True
+                                    MDLabel:
+                                        text: "БАБЛ ТИ АССАМ ПОПКОРН"
+                                        font_name: "assets/fonts/minecraft.ttf"
+                                        font_size: "11sp"
+                                        halign: "center"
+                                        theme_text_color: "Custom"
+                                        text_color: 1, 1, 1, 1
+                                        size_hint_y: None
+                                        height: self.texture_size[1]
+                                    BoxLayout:
+                                        orientation: "horizontal"
+                                        size_hint_y: None
+                                        height: dp(40)
+                                        MDBoxLayout:
+                                            orientation: "vertical"
+                                            spacing: dp(2)
+                                            size_hint_x: 0.5
+                                            MDLabel:
+                                                text: "Ккал: 320"
+                                                font_name: "assets/fonts/minecraft.ttf"
+                                                font_size: "10sp"
+                                                halign: "left"
+                                                theme_text_color: "Custom"
+                                                text_color: 1, 1, 1, 1
+                                                size_hint_y: None
+                                                height: self.texture_size[1]
+                                            MDLabel:
+                                                text: "Б: 5 Ж: 8 У: 58"
+                                                font_name: "assets/fonts/minecraft.ttf"
+                                                font_size: "10sp"
+                                                halign: "left"
+                                                theme_text_color: "Custom"
+                                                text_color: 1, 1, 1, 1
+                                                size_hint_y: None
+                                                height: self.texture_size[1]
+                                        BoxLayout:
+                                            orientation: "horizontal"
+                                            size_hint_x: 0.5
+                                            spacing: dp(8)
+                                            AnchorLayout:
+                                                anchor_x: "left"
+                                                anchor_y: "bottom"
+                                                size_hint_x: 0.5
+                                                size_hint_y: 1
+                                                Button:
+                                                    size_hint: None, None
+                                                    size: dp(60), dp(28)
+                                                    background_color: 0, 0, 0, 0
+                                                    text: "350"
+                                                    font_name: "assets/fonts/minecraft.ttf"
+                                                    font_size: "14sp"
+                                                    color: 1, 1, 1, 1
+                                                    canvas.before:
+                                                        Color:
+                                                            rgba: 0.2, 0.8, 0.4, 1
+                                                        RoundedRectangle:
+                                                            pos: self.pos
+                                                            size: self.size
+                                                            radius: [dp(6), dp(6), dp(6), dp(6)]
+                                            AnchorLayout:
+                                                anchor_x: "right"
+                                                anchor_y: "bottom"
+                                                size_hint_x: 0.5
+                                                size_hint_y: 1
+                                                MDLabel:
+                                                    text: "500 мл"
+                                                    font_name: "assets/fonts/minecraft.ttf"
+                                                    font_size: "12sp"
+                                                    halign: "right"
+                                                    theme_text_color: "Custom"
+                                                    text_color: 1, 1, 1, 1
+                                                    size_hint_y: None
+                                                    height: self.texture_size[1]
+                                
+                                # Карточка 8: БАБЛ ТИ КАРКАДЕ МАРАКЕШ
+                                BoxLayout:
+                                    size_hint_x: None
+                                    size_hint_y: None
+                                    width: dp(160)
+                                    height: dp(200)
+                                    orientation: "vertical"
+                                    padding: dp(16), dp(16), dp(16), dp(16)
+                                    spacing: dp(8)
+                                    canvas.before:
+                                        Color:
+                                            rgba: 0.353, 0.420, 0.310, 1
+                                        RoundedRectangle:
+                                            pos: self.pos
+                                            size: self.size
+                                            radius: [dp(12), dp(12), dp(12), dp(12)]
+                                    AnchorLayout:
+                                        anchor_x: "center"
+                                        anchor_y: "center"
+                                        size_hint_y: None
+                                        height: dp(80)
+                                        Image:
+                                            source: "assets/drinks/BubbleTea(CarcadeMaraque).png"
+                                            size_hint: None, None
+                                            width: dp(60)
+                                            height: dp(80)
+                                            allow_stretch: True
+                                            keep_ratio: True
+                                    MDLabel:
+                                        text: "БАБЛ ТИ КАРКАДЕ МАРАКЕШ"
+                                        font_name: "assets/fonts/minecraft.ttf"
+                                        font_size: "11sp"
+                                        halign: "center"
+                                        theme_text_color: "Custom"
+                                        text_color: 1, 1, 1, 1
+                                        size_hint_y: None
+                                        height: self.texture_size[1]
+                                    BoxLayout:
+                                        orientation: "horizontal"
+                                        size_hint_y: None
+                                        height: dp(40)
+                                        MDBoxLayout:
+                                            orientation: "vertical"
+                                            spacing: dp(2)
+                                            size_hint_x: 0.5
+                                            MDLabel:
+                                                text: "Ккал: 280"
+                                                font_name: "assets/fonts/minecraft.ttf"
+                                                font_size: "10sp"
+                                                halign: "left"
+                                                theme_text_color: "Custom"
+                                                text_color: 1, 1, 1, 1
+                                                size_hint_y: None
+                                                height: self.texture_size[1]
+                                            MDLabel:
+                                                text: "Б: 4 Ж: 6 У: 52"
+                                                font_name: "assets/fonts/minecraft.ttf"
+                                                font_size: "10sp"
+                                                halign: "left"
+                                                theme_text_color: "Custom"
+                                                text_color: 1, 1, 1, 1
+                                                size_hint_y: None
+                                                height: self.texture_size[1]
+                                        BoxLayout:
+                                            orientation: "horizontal"
+                                            size_hint_x: 0.5
+                                            spacing: dp(8)
+                                            AnchorLayout:
+                                                anchor_x: "left"
+                                                anchor_y: "bottom"
+                                                size_hint_x: 0.5
+                                                size_hint_y: 1
+                                                Button:
+                                                    size_hint: None, None
+                                                    size: dp(60), dp(28)
+                                                    background_color: 0, 0, 0, 0
+                                                    text: "350"
+                                                    font_name: "assets/fonts/minecraft.ttf"
+                                                    font_size: "14sp"
+                                                    color: 1, 1, 1, 1
+                                                    canvas.before:
+                                                        Color:
+                                                            rgba: 0.2, 0.8, 0.4, 1
+                                                        RoundedRectangle:
+                                                            pos: self.pos
+                                                            size: self.size
+                                                            radius: [dp(6), dp(6), dp(6), dp(6)]
+                                            AnchorLayout:
+                                                anchor_x: "right"
+                                                anchor_y: "bottom"
+                                                size_hint_x: 0.5
+                                                size_hint_y: 1
+                                                MDLabel:
+                                                    text: "500 мл"
+                                                    font_name: "assets/fonts/minecraft.ttf"
+                                                    font_size: "12sp"
+                                                    halign: "right"
+                                                    theme_text_color: "Custom"
+                                                    text_color: 1, 1, 1, 1
+                                                    size_hint_y: None
+                                                    height: self.texture_size[1]
+                
+               
+

@@ -1,0 +1,282 @@
+#:include src/widgets/base_screen.kv
+#:import dp kivy.metrics.dp
+#:import OrderTabButton src.screens.purchase_history_screen.OrderTabButton
+
+<OrderTabButton>:
+    orientation: "vertical"
+    size_hint: None, None
+    size: self.minimum_width, dp(28)
+    padding: dp(8), dp(4)
+    spacing: 0
+    canvas.before:
+        Color:
+            rgba: self.bg_color
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [dp(6), dp(6), dp(6), dp(6)]
+    Label:
+        text: root.tab_text
+        font_name: "assets/fonts/minecraft.ttf"
+        font_size: "14sp"
+        color: 1, 1, 1, 1
+        halign: "center"
+        valign: "middle"
+        text_size: self.size
+        size_hint: 1, 1
+
+<FooterButton@ButtonBehavior+BoxLayout>:
+    orientation: "vertical"
+    spacing: dp(4)
+    padding: 0, dp(2), 0, 0
+    size_hint: 1, None
+    height: dp(64)
+    background_color: 0, 0, 0, 0
+    canvas.before:
+        Color:
+            rgba: self.background_color
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+<PurchaseHistoryScreen>:
+    order_type: "all"  # "all" or "mobile"
+    
+    BaseScreen:
+
+        # Body section - белая область с переключателем внутри
+        BoxLayout:
+            id: body_host
+            orientation: "vertical"
+            size_hint: None, None
+            pos_hint: {"center_x": 0.5, "center_y": 0.5}
+            width: root.width - dp(24) if root.width > 0 else dp(300)
+            height: root.height - top_bar.height - footer.height - dp(100) if root.height > 0 else dp(300)
+            padding: dp(12), dp(12), dp(12), dp(12)
+            spacing: dp(12)
+            canvas.before:
+                Color:
+                    rgba: 1, 1, 1, 1
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [dp(12), dp(12), dp(12), dp(12)]
+            
+            # Переключатель вверху белой области
+            BoxLayout:
+                id: switch_bar
+                orientation: "horizontal"
+                size_hint: 1, None
+                height: dp(28)
+                spacing: dp(0)
+                padding: 0, 0, 0, 0
+                
+                # Вкладка "Все"
+                OrderTabButton:
+                    id: tab_all
+                    tab_text: "Все"
+                    bg_color: (0.2, 0.8, 0.4, 1) if root.order_type == "all" else (0.3, 0.3, 0.3, 1)
+                    size_hint_x: 0.5
+                    on_release: root.switch_order_type("all")
+                
+                # Вкладка "Мобильное приложение"
+                OrderTabButton:
+                    id: tab_mobile
+                    tab_text: "Мобильное приложение"
+                    bg_color: (0.2, 0.8, 0.4, 1) if root.order_type == "mobile" else (0.3, 0.3, 0.3, 1)
+                    size_hint_x: 0.5
+                    on_release: root.switch_order_type("mobile")
+            
+            # Текст "Заказов пока не было" - центрирован в оставшемся пространстве
+            AnchorLayout:
+                anchor_x: "center"
+                anchor_y: "center"
+                size_hint: 1, 1
+                Label:
+                    text: "Заказов пока не было"
+                    font_name: "assets/fonts/minecraft.ttf"
+                    font_size: "16sp"
+                    color: 0, 0, 0, 1
+                    halign: "center"
+                    valign: "middle"
+                    text_size: None, None
+                    size_hint: None, None
+                    size: self.texture_size
+
+        # Footer section (reuse same style as profile)
+        BoxLayout:
+            id: footer
+            size_hint_x: 1
+            size_hint_y: None
+            height: dp(88)
+            pos_hint: {"x": 0, "y": 0}
+            padding: dp(12), dp(8)
+            spacing: dp(12)
+            canvas.before:
+                Color:
+                    rgba: 1, 1, 1, 1
+                Rectangle:
+                    source: "assets/backgrounds/Footer.jpg"
+                    pos: self.pos
+                    size: self.size
+            FooterButton:
+                on_release: app.footer_addresses_click()
+                AnchorLayout:
+                    anchor_x: "center"
+                    anchor_y: "center"
+                    MDIcon:
+                        icon: "map-marker"
+                        size_hint: None, None
+                        width: dp(24)
+                        height: dp(24)
+                        theme_color: "Custom"
+                        color: 0, 0, 0, 1
+                AnchorLayout:
+                    anchor_x: "center"
+                    anchor_y: "center"
+                    Label:
+                        text: "Наши кофейни"
+                        font_size: "12sp"
+                        halign: "center"
+                        valign: "middle"
+                        text_size: self.size
+                        color: 0, 0, 0, 1
+            FooterLogoButton:
+            FooterButton:
+                on_release: app.footer_invite_click()
+                AnchorLayout:
+                    anchor_x: "center"
+                    anchor_y: "center"
+                    MDIcon:
+                        icon: "account-plus"
+                        size_hint: None, None
+                        width: dp(24)
+                        height: dp(24)
+                        theme_color: "Custom"
+                        color: 0, 0, 0, 1
+                AnchorLayout:
+                    anchor_x: "center"
+                    anchor_y: "center"
+                    Label:
+                        text: "Пригласить"
+                        font_size: "12sp"
+                        halign: "center"
+                        valign: "middle"
+                        text_size: self.size
+                        color: 0, 0, 0, 1
+
+        # TopBar section (same layout as profile with centered title)
+        BoxLayout:
+            id: top_bar
+            size_hint_x: 1
+            size_hint_y: None
+            height: dp(56)
+            pos_hint: {"x": 0, "top": 1}
+            padding: dp(12), 0
+            # Back button
+            AnchorLayout:
+                anchor_x: 'left'
+                anchor_y: 'center'
+                size_hint_x: None
+                width: dp(48)
+                MDIconButton:
+                    icon: 'chevron-left'
+                    theme_text_color: 'Custom'
+                    text_color: 0,0,0,1
+                    size_hint: None, None
+                    size: dp(48), dp(48)
+                    on_press: print('[KV] Back button pressed!')
+                    on_release: app.go_back()
+            # Title
+            AnchorLayout:
+                anchor_x: 'center'
+                anchor_y: 'center'
+                MDLabel:
+                    text: 'Покупки'
+                    halign: 'center'
+                    valign: 'middle'
+                    theme_text_color: 'Custom'
+                    text_color: 0,0,0,1
+            # Mail button (right side)
+            AnchorLayout:
+                anchor_x: 'right'
+                anchor_y: 'center'
+                size_hint_x: None
+                width: dp(48)
+                MDIconButton:
+                    icon: 'email'
+                    theme_text_color: 'Custom'
+                    text_color: 0,0,0,1
+                    size_hint: None, None
+                    size: dp(48), dp(48)
+                    on_release: app.open_mail_overlay()
+
+        # Mail overlay (right drawer like menu)
+        FloatLayout:
+            id: mail_overlay_root
+            size_hint: None, None
+            size: 0, 0
+            opacity: 0
+            disabled: True
+            canvas.before:
+                Color:
+                    rgba: 0, 0, 0, 0.5
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+            Button:
+                background_color: 0,0,0,0
+                size_hint: 1, 1
+                disabled: self.parent.disabled
+                on_release: app.close_mail_overlay()
+            BoxLayout:
+                id: mail_panel
+                orientation: "vertical"
+                size_hint_y: 1
+                size_hint_x: None
+                width: root.width * 0.8
+                x: root.width
+                y: 0
+                padding: dp(16), dp(24)
+                spacing: dp(16)
+                canvas.before:
+                    Color:
+                        rgba: 1, 1, 1, 1
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+                BoxLayout:
+                    orientation: "horizontal"
+                    size_hint_y: None
+                    height: dp(40)
+                    spacing: dp(8)
+                    MDLabel:
+                        text: "Входящие"
+                        halign: "left"
+                        valign: "middle"
+                        text_size: self.size
+                        color: 0,0,0,1
+                    MDIconButton:
+                        icon: "close"
+                        theme_text_color: "Custom"
+                        text_color: 0,0,0,1
+                        on_release: app.close_mail_overlay()
+                ScrollView:
+                    size_hint_x: 1
+                    size_hint_y: 1
+                    do_scroll_x: False
+                    do_scroll_y: True
+                    scroll_wheel_distance: dp(72)
+                    scroll_type: ['bars', 'content']
+                    bar_width: 0
+                    effect_cls: "ScrollEffect"
+                    MDBoxLayout:
+                        id: mail_list
+                        orientation: "vertical"
+                        spacing: dp(10)
+                        size_hint_y: None
+                        height: self.minimum_height
+
+        # Loyalty overlay (центрированный оверлей с кодом программы лояльности)
+        LoyaltyOverlay:
+            id: loyalty_overlay_root
